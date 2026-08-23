@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { MotionRuntime } from "@/components/motion-runtime";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -46,14 +47,19 @@ export const viewport: Viewport = {
 // Runs before first paint so a visitor who prefers dark mode never sees a
 // white flash. Kept as a raw string on purpose: React would otherwise defer it
 // to hydration, which is exactly too late.
-const themeScript = `
+const bootScript = `
 (function () {
+  var root = document.documentElement;
+  // Marks that scripting is available. The reveal styles hang off this class,
+  // so a visitor without JavaScript gets the page fully visible rather than a
+  // column of elements stuck at opacity 0.
+  root.classList.add("js");
   try {
     var stored = localStorage.getItem("theme");
     var dark = stored
       ? stored === "dark"
       : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if (dark) document.documentElement.classList.add("dark");
+    if (dark) root.classList.add("dark");
   } catch (e) {}
 })();
 `;
@@ -66,9 +72,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
       </head>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <MotionRuntime />
+      </body>
     </html>
   );
 }

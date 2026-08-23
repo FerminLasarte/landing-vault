@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/container";
+import { revealDelay } from "@/lib/reveal";
 import { cn } from "@/lib/utils";
 
 interface SectionProps {
@@ -16,7 +17,8 @@ export function Section({ id, className, children }: SectionProps) {
 }
 
 // Eyebrow + heading + optional lead, in the one arrangement the site uses.
-// Having it in a single place is what keeps the sections looking like a set.
+// Having it in a single place is what keeps the sections looking like a set —
+// including the order in which the three lines arrive.
 export function SectionHeading({
   eyebrow,
   title,
@@ -31,13 +33,27 @@ export function SectionHeading({
   return (
     <div className={cn("max-w-2xl", className)}>
       {eyebrow ? (
-        <p className="text-sm font-medium text-muted-foreground">{eyebrow}</p>
+        <p
+          data-reveal
+          style={revealDelay(0)}
+          className="text-sm font-medium text-muted-foreground"
+        >
+          {eyebrow}
+        </p>
       ) : null}
-      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+      <h2
+        data-reveal
+        style={revealDelay(1)}
+        className="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      >
         {title}
       </h2>
       {lead ? (
-        <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p
+          data-reveal
+          style={revealDelay(2)}
+          className="mt-4 text-lg leading-relaxed text-muted-foreground text-pretty"
+        >
           {lead}
         </p>
       ) : null}
