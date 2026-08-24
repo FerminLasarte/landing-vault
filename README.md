@@ -1,8 +1,8 @@
 # landing-vault
 
 Marketing site for **Vault**, a local-first personal finance desktop app. The
-site's job is to explain the local-first argument and collect waitlist emails —
-the app is not downloadable yet.
+site's job is to explain the local-first argument and hand the visitor the
+right installer for their platform.
 
 The app itself lives in a separate repository:
 [`vault-ai`](https://github.com/FerminLasarte/vault-ai).
@@ -14,11 +14,12 @@ The app itself lives in a separate repository:
 - **Styling**: Tailwind CSS v4, with the design tokens of the desktop app
 - **Fonts**: Geist and Geist Mono via `next/font`
 - **Icons**: [lucide-react](https://lucide.dev/), the same set the app uses
-- **Waitlist**: [Resend](https://resend.com/) audiences, called from a Server
-  Action
+- **Downloads**: the GitHub Releases API of
+  [`vault-ai`](https://github.com/FerminLasarte/vault-ai), read at build time
+  and revalidated hourly
 
 No animation, form or state library: the reveal transitions, the theme toggle
-and the waitlist submission are each a few lines of platform API. See
+and the platform detection are each a few lines of platform API. See
 [Conventions](#conventions).
 
 ## Prerequisites
@@ -32,22 +33,13 @@ npm install
 npm run dev
 ```
 
-The site runs at http://localhost:3000. Everything renders without any
-configuration — only the waitlist form needs environment variables.
+The site runs at http://localhost:3000 and needs no configuration: the release
+feed it reads is public and unauthenticated.
 
 ## Environment variables
 
-Copy `.env.example` to `.env.local` and fill it in:
-
-| Variable | Purpose |
-| --- | --- |
-| `RESEND_API_KEY` | API key with contacts write access |
-| `RESEND_AUDIENCE_ID` | Audience the addresses are added to |
-
-Without them the form renders and validates as usual, but submitting returns a
-"try again later" message and logs the missing configuration on the server. The
-values are only ever read server-side, inside the Server Action — no key is
-exposed to the browser.
+None. The only external call the site makes is to the public release feed, and
+that needs no key.
 
 ## Commands
 
@@ -63,10 +55,9 @@ exposed to the browser.
 ```
 src/
   app/
-    layout.tsx        Root layout, metadata, theme boot script
+    layout.tsx        Root layout, metadata, theme and platform boot script
     page.tsx          Composes the sections, in page order
-    actions.ts        Server Action behind the waitlist form
-    globals.css       Design tokens, motion system
+    globals.css       Design tokens, motion system, platform blocks
   components/
     sections/         One file per section of the page
     ui/               Shared primitives (container, section, button, app-shot)
@@ -74,10 +65,10 @@ src/
     site-footer.tsx   Footer
     theme-toggle.tsx  Light/dark switch
     motion-runtime.tsx  Scroll reveals and header state, one mount for the page
-    waitlist-form.tsx   The email field, used twice on the page
+    download.tsx      The download buttons, used in the hero and the closing CTA
   lib/
-    site.ts           Product name, domain, nav, contact — edit here, not inline
-    waitlist.ts       Where addresses go; swapping providers is this file only
+    site.ts           Product name, domain, repo, nav — edit here, not inline
+    release.ts        Reads the latest release off the GitHub API
     reveal.ts         Stagger helper
     utils.ts          `cn`
 public/
@@ -95,6 +86,49 @@ product's restraint is its identity. No gradients, shadows, or glass effects.
 
 Interface copy is in Spanish (rioplatense), matching the app's own language
 policy. Code and comments are in English, matching the app's codebase.
+
+### Downloads
+
+Asset URLs are never written into the site. Every file name carries the version
+(`Vault_1.0.2_universal.dmg`), so a hardcoded link is a 404 waiting for the next
+release. `lib/release.ts` reads
+`/repos/FerminLasarte/vault-ai/releases/latest` instead and matches by suffix —
+`.dmg` for macOS, `-setup.exe` for Windows with the `.msi` as the alternative —
+skipping `latest.json`, the `.sig` files and `.app.tar.gz`, which belong to the
+app's own updater rather than to a person.
+
+The call is a cached `fetch` with `revalidate: 3600`, so the page stays fully
+static: a new release appears on the site within the hour, and the
+unauthenticated GitHub rate limit is never in play no matter the traffic. When
+the lookup fails, every link falls back to the release page — one extra click,
+never a wrong file.
+
+Which platform leads is decided by the boot script in `layout.tsx`, which tags
+`<html>` with `os-mac` or `os-win` before first paint; `globals.css` shows the
+matching block. Doing it in CSS rather than in an effect keeps the right button
+on screen in the first frame. Linux, phones and JavaScript-less visitors fall
+through to a block offering both platforms, since the release builds for
+neither of theirs.
+
+The unsigned-app warning under the buttons is required copy, not decoration:
+the app ships without Apple or Microsoft certificates, so the first launch is
+blocked on both platforms. Removing that paragraph turns a two-click detour
+into a bug report.
+
+Two rules about the buttons themselves, both easy to "improve" back into a bug:
+
+- **A plain `<a href>`, never `target="_blank"`.** The assets are served with
+  `content-disposition: attachment`, so the browser downloads without
+  navigating — a new tab would open empty and close itself, which reads as a
+  glitch.
+- **The file is never fetched from JavaScript.** The API is only used to learn
+  the URL and put it in the `href`. Downloading it by script means fighting
+  CORS and losing the browser's own progress bar for a 13 MB file.
+
+The site collected waitlist emails before the app shipped; that whole path —
+the form, its Server Action and the Resend client — was removed when the first
+release went out. If a release-announcement list is ever wanted, it starts from
+scratch rather than from "coming soon" copy on a page that offers a download.
 
 ### Motion
 
@@ -123,6 +157,6 @@ the real one.
 
 ## Deployment
 
-A standard Next.js app — the page is fully static apart from the Server Action.
-Set the two environment variables in the hosting provider before the waitlist
-will accept submissions.
+A standard Next.js app, and the page is fully static with an hourly
+revalidation. Nothing to configure: no environment variables, no secrets, and
+the only external call is the public release feed.

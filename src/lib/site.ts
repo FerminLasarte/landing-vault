@@ -10,7 +10,10 @@ export const site = {
   // every relative OG/canonical URL absolute, and social crawlers need it.
   url: "https://vault.app",
   locale: "es_AR",
-  repo: "https://github.com/ferminlasarte/vault-ai",
+  // The app's repository, in the casing GitHub publishes it under: the same
+  // slug builds both the human URL and the releases API call in lib/release.ts.
+  repoSlug: "FerminLasarte/vault-ai",
+  repo: "https://github.com/FerminLasarte/vault-ai",
   contactEmail: "hola@vault.app",
 } as const;
 

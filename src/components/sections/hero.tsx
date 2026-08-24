@@ -1,15 +1,15 @@
 import Link from "next/link";
 
+import { DownloadBlock } from "@/components/download";
 import { AppShot } from "@/components/ui/app-shot";
 import { Container } from "@/components/ui/container";
-import { WaitlistForm } from "@/components/waitlist-form";
 import { revealDelay } from "@/lib/reveal";
 
 // The hero is above the fold, so its reveals fire on load rather than on
 // scroll: the observer reports it intersecting straight away. The stagger is
 // the page introducing itself line by line, which only works once — hence the
 // slightly wider spacing here than in the sections below.
-export function Hero() {
+export async function Hero() {
   return (
     <section className="pt-20 pb-16 sm:pt-28">
       <Container>
@@ -18,7 +18,7 @@ export function Hero() {
           style={revealDelay(0, 100)}
           className="text-sm font-medium text-muted-foreground"
         >
-          App de escritorio · En desarrollo
+          App de escritorio · macOS y Windows
         </p>
 
         <h1
@@ -39,11 +39,11 @@ export function Hero() {
           servidor, sin cuenta, sin nube.
         </p>
 
-        <div data-reveal style={revealDelay(3, 100)} className="mt-10 flex flex-col gap-4">
-          <WaitlistForm note="Todavía no se puede descargar. Te escribimos una sola vez, el día que salga." />
+        <div data-reveal style={revealDelay(3, 100)} className="mt-10">
+          <DownloadBlock />
           <Link
             href="#producto"
-            className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            className="mt-6 inline-block text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
           >
             Ver qué hace
           </Link>

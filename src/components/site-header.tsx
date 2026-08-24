@@ -32,8 +32,8 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Link href="#lista-de-espera" className={buttonVariants.primary}>
-            Sumarme a la lista
+          <Link href="#descargar" className={buttonVariants.primary}>
+            Descargar
           </Link>
         </div>
       </Container>

@@ -45,8 +45,9 @@ export const viewport: Viewport = {
 };
 
 // Runs before first paint so a visitor who prefers dark mode never sees a
-// white flash. Kept as a raw string on purpose: React would otherwise defer it
-// to hydration, which is exactly too late.
+// white flash, and so the download block leads with the right platform instead
+// of swapping under the cursor. Kept as a raw string on purpose: React would
+// otherwise defer it to hydration, which is exactly too late.
 const bootScript = `
 (function () {
   var root = document.documentElement;
@@ -60,6 +61,23 @@ const bootScript = `
       ? stored === "dark"
       : window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (dark) root.classList.add("dark");
+  } catch (e) {}
+
+  // Which download to lead with. Only the two platforms the release actually
+  // builds for get a class; Linux and phones fall through to the block that
+  // offers both, which is also what a visitor without JavaScript sees.
+  try {
+    var platform =
+      (navigator.userAgentData && navigator.userAgentData.platform) ||
+      navigator.platform ||
+      "";
+    if (/win/i.test(platform)) {
+      root.classList.add("os-win");
+    } else if (/mac/i.test(platform) && (navigator.maxTouchPoints || 0) <= 1) {
+      // An iPad reports "MacIntel" as well; the touch points are what tell the
+      // two apart, and a tablet has nowhere to put a .dmg.
+      root.classList.add("os-mac");
+    }
   } catch (e) {}
 })();
 `;

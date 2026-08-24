@@ -5,16 +5,20 @@ import { revealDelay } from "@/lib/reveal";
 // hydration, and the browser finds the text with ctrl+F even while collapsed.
 const QUESTIONS = [
   {
-    q: "¿Cuándo se puede descargar?",
-    a: "Todavía no hay fecha. Está en desarrollo activo, y la lista de espera es la forma de enterarte el día que salga.",
-  },
-  {
     q: "¿Para qué sistemas operativos?",
-    a: "Está hecha con Tauri, que compila para macOS, Windows y Linux. Cuál sale primero se define más cerca del lanzamiento.",
+    a: "macOS y Windows. El .dmg es universal, así que corre igual en Apple Silicon y en Intel; el instalador de Windows es de 64 bits, para 10 u 11. Linux todavía no, aunque Tauri compile para ahí también.",
   },
   {
-    q: "¿Va a ser paga?",
-    a: "Todavía no está definido. Lo que sí está definido es que no va a haber suscripción para acceder a tus propios datos.",
+    q: "¿Por qué me avisa que la app no es segura?",
+    a: "Porque no está firmada con certificados de Apple ni de Microsoft. El aviso no dice que la app tenga algo raro: dice que el sistema no puede verificar quién la publicó. En macOS se destraba desde Ajustes del Sistema → Privacidad y seguridad → «Abrir igualmente». En Windows, con «Más información» → «Ejecutar de todas formas». Es sólo la primera vez.",
+  },
+  {
+    q: "¿Cómo se actualiza?",
+    a: "Sola. La app revisa si hay una versión nueva, te muestra qué trae y la instala. No hay que volver a bajar nada del sitio ni repetir el permiso de la primera vez.",
+  },
+  {
+    q: "¿Cuánto cuesta?",
+    a: "Hoy nada: se baja y se usa. Si más adelante hay una versión paga, lo que sí está definido es que no va a haber suscripción para acceder a tus propios datos.",
   },
   {
     q: "¿Sincroniza entre varios dispositivos?",

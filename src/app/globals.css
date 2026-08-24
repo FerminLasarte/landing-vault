@@ -140,6 +140,27 @@
   }
 }
 
+/* ------------------------------------------------------------------ descarga
+
+   Cuál de los tres bloques de descarga se ve lo decide la clase que el script
+   del layout le pone a <html> antes del primer pintado, no un efecto de React:
+   el botón de la plataforma correcta ya está en el primer cuadro, en vez de
+   cambiar debajo del cursor cuando hidrata.
+
+   Sin JavaScript no hay clase, y queda el bloque neutro con las dos
+   plataformas — que es también lo que ve alguien en Linux, para el que la
+   release no compila nada. */
+
+[data-os] {
+  display: none;
+}
+
+.os-mac [data-os="mac"],
+.os-win [data-os="win"],
+html:not(.os-mac):not(.os-win) [data-os="other"] {
+  display: block;
+}
+
 /* La cabecera arranca fundida con el hero y sólo se separa del contenido
    cuando hay algo scrolleado debajo. Fondo sólido, no translúcido: el brief
    descarta el vidrio esmerilado. */

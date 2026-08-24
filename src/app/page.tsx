@@ -3,7 +3,7 @@ import { Features } from "@/components/sections/features";
 import { Hero } from "@/components/sections/hero";
 import { LocalFirst } from "@/components/sections/local-first";
 import { DataDetail } from "@/components/sections/data-detail";
-import { WaitlistCta } from "@/components/sections/waitlist-cta";
+import { DownloadCta } from "@/components/sections/download-cta";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
@@ -18,7 +18,7 @@ export default function Home() {
         <LocalFirst />
         <DataDetail />
         <Faq />
-        <WaitlistCta />
+        <DownloadCta />
       </main>
 
       <SiteFooter />
