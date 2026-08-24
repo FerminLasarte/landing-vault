@@ -12,10 +12,16 @@ const LATEST_RELEASE_API = `https://api.github.com/repos/${site.repoSlug}/releas
 // release, so it is a longer route to the file but never a wrong one.
 export const RELEASES_PAGE = `${site.repo}/releases/latest`;
 
-// An hour is short enough that a release shows up on the site the morning it
-// ships, and long enough that the unauthenticated GitHub limit — 60 requests
-// per hour per IP — is never in play, however much traffic the page gets.
-const REVALIDATE_SECONDS = 3600;
+// How long a rendered page may keep quoting an old version. The window is a
+// straight trade against the unauthenticated GitHub limit of 60 requests per
+// hour per IP: the call happens once per window per region that gets traffic —
+// never once per visitor — so five minutes costs at most 12 requests an hour
+// and leaves plenty of headroom on an egress IP shared with other sites.
+//
+// It cannot be zero. If a release should appear the second it is published,
+// the fix is a deploy hook fired from the app's release workflow, not a shorter
+// poll here.
+const REVALIDATE_SECONDS = 300;
 
 // `latest.json` and the `.sig` files belong to the app's own updater, and
 // `.app.tar.gz` is the payload it installs over itself. None of the three is
