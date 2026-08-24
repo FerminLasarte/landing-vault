@@ -6,15 +6,15 @@ export const site = {
   // Used in <title> and anywhere the product needs its full name.
   fullName: "Vault — Finanzas personales, en tu dispositivo",
   tagline: "Tus finanzas personales, en tu computadora. Sin nube, sin cuentas.",
-  // Replace with the real domain before the first deploy: metadataBase turns
-  // every relative OG/canonical URL absolute, and social crawlers need it.
-  url: "https://vault.app",
+  // Where the site is served from. metadataBase turns every relative
+  // OG/canonical URL absolute off this, and crawlers need it to be the real
+  // one — so it moves the day a custom domain does.
+  url: "https://landing-vault.vercel.app",
   locale: "es_AR",
   // The app's repository, in the casing GitHub publishes it under: the same
   // slug builds both the human URL and the releases API call in lib/release.ts.
   repoSlug: "FerminLasarte/vault-ai",
   repo: "https://github.com/FerminLasarte/vault-ai",
-  contactEmail: "hola@vault.app",
 } as const;
 
 export const nav = [

@@ -38,6 +38,12 @@ export interface Release {
   windowsMsi: Asset | null;
 }
 
+// Every link degrades to the release page rather than disappearing: an asset
+// missing from a release should cost a click, not the download.
+export function assetHref(asset: Asset | null): string {
+  return asset?.href ?? RELEASES_PAGE;
+}
+
 interface GitHubAsset {
   name: string;
   browser_download_url: string;

@@ -2,7 +2,7 @@ import { ArrowDownToLine } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
 import {
-  RELEASES_PAGE,
+  assetHref,
   getLatestRelease,
   type Asset,
   type Release,
@@ -20,12 +20,6 @@ const BLOCKED = {
 } as const;
 
 const UPDATES = "Se hace una sola vez: de ahí en adelante se actualiza sola.";
-
-// Every link degrades to the release page rather than disappearing: an asset
-// missing from a release should cost a click, not the download.
-function hrefOf(asset: Asset | null): string {
-  return asset?.href ?? RELEASES_PAGE;
-}
 
 // A plain anchor, deliberately, and two things that must not be added to it:
 //
@@ -47,7 +41,7 @@ function DownloadButton({
   children: React.ReactNode;
 }) {
   return (
-    <a href={hrefOf(asset)} className={buttonVariants[variant]}>
+    <a href={assetHref(asset)} className={buttonVariants[variant]}>
       <ArrowDownToLine className="size-4" aria-hidden />
       {children}
     </a>
@@ -66,7 +60,7 @@ function Meta({ version, asset }: { version: string | null; asset?: Asset | null
 function AltLink({ asset, children }: { asset: Asset | null; children: React.ReactNode }) {
   return (
     <a
-      href={hrefOf(asset)}
+      href={assetHref(asset)}
       className="underline underline-offset-4 transition-colors hover:text-foreground"
     >
       {children}

@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Wallet } from "lucide-react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Container } from "@/components/ui/container";
+import { Logo } from "@/components/ui/logo";
 import { buttonVariants } from "@/components/ui/button";
 import { nav, site } from "@/lib/site";
 
@@ -14,7 +14,7 @@ export function SiteHeader() {
           href="/"
           className="flex items-center gap-2 text-base font-semibold tracking-tight"
         >
-          <Wallet className="size-5" />
+          <Logo className="h-5 w-auto" />
           {site.name}
         </Link>
 

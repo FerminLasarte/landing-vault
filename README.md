@@ -58,9 +58,12 @@ src/
     layout.tsx        Root layout, metadata, theme and platform boot script
     page.tsx          Composes the sections, in page order
     globals.css       Design tokens, motion system, platform blocks
+    icon.svg          Favicon, with its own dark-mode palette
+    favicon.ico       Raster fallback, 16/32/48
+    apple-icon.png    Home-screen icon, 180x180
   components/
     sections/         One file per section of the page
-    ui/               Shared primitives (container, section, button, app-shot)
+    ui/               Shared primitives (container, section, button, app-shot, logo)
     site-header.tsx   Sticky header
     site-footer.tsx   Footer
     theme-toggle.tsx  Light/dark switch
@@ -86,6 +89,26 @@ product's restraint is its identity. No gradients, shadows, or glass effects.
 
 Interface copy is in Spanish (rioplatense), matching the app's own language
 policy. Code and comments are in English, matching the app's codebase.
+
+### The logo
+
+`ui/logo.tsx` is the app's own mark, inlined as a component. It is two-tone by
+construction: the body is `currentColor`, so it takes the colour of the text it
+sits beside, and the cut-outs are filled with `var(--background)` rather than a
+hardcoded white. That is what lets one copy of the markup read correctly in
+both themes — do not fork it into a light and a dark file.
+
+The icons under `app/` are generated from the same source, and they cannot use
+custom properties: `icon.svg` carries its own `prefers-color-scheme` block so
+the mark stays visible in a dark browser chrome, and the raster fallbacks ship
+the light-mode look, which is what a bookmark bar or an iOS home screen renders
+it against.
+
+All of them sit on a **square** canvas, which the mark itself is not — it is
+299.54 × 288.8, so it gets centred on a 320 box (370 for the Apple icon, whose
+corners iOS masks off). Square matters beyond taste: Google Search wants a 1:1
+favicon and resizes it to 48px, so a rectangular one is at the mercy of its
+crop. Regenerating them means redoing that padding, not just re-exporting.
 
 ### Downloads
 
