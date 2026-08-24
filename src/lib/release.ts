@@ -97,33 +97,57 @@ function normalizeTag(tag: unknown): string | null {
   return tag.startsWith("v") ? tag : `v${tag}`;
 }
 
-// `cache` so the hero and the closing section share one request per render
-// rather than asking GitHub twice for the same answer.
+async function readLatestRelease(): Promise<Release> {
+  const response = await fetch(LATEST_RELEASE_API, {
+    headers: {
+      Accept: "application/vnd.github+json",
+      // Optional, and the site works without it. Setting it lifts the
+      // unauthenticated ceiling of 60 requests per hour per IP to 5000, which
+      // matters because the egress IP is shared with whoever else is deployed
+      // alongside us — their traffic can spend our budget.
+      ...(process.env.GITHUB_TOKEN
+        ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
+        : {}),
+    },
+    next: { revalidate: REVALIDATE_SECONDS },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `GitHub answered ${response.status} for the latest release`,
+    );
+  }
+
+  const release = (await response.json()) as GitHubRelease;
+  const assets = Array.isArray(release?.assets) ? release.assets : [];
+
+  return {
+    version: normalizeTag(release?.tag_name),
+    mac: findAsset(assets, ".dmg"),
+    windows: findAsset(assets, "-setup.exe"),
+    windowsMsi: findAsset(assets, ".msi"),
+  };
+}
+
+// `cache` so the hero, the closing section and the footer share one request per
+// render rather than asking GitHub three times for the same answer.
 export const getLatestRelease = cache(async (): Promise<Release> => {
   try {
-    const response = await fetch(LATEST_RELEASE_API, {
-      headers: { Accept: "application/vnd.github+json" },
-      next: { revalidate: REVALIDATE_SECONDS },
-    });
-
-    if (!response.ok) {
-      console.error(`GitHub answered ${response.status} for the latest release`);
-      return UNKNOWN;
-    }
-
-    const release = (await response.json()) as GitHubRelease;
-    const assets = Array.isArray(release?.assets) ? release.assets : [];
-
-    return {
-      version: normalizeTag(release?.tag_name),
-      mac: findAsset(assets, ".dmg"),
-      windows: findAsset(assets, "-setup.exe"),
-      windowsMsi: findAsset(assets, ".msi"),
-    };
+    return await readLatestRelease();
   } catch (error) {
-    // A failed lookup is not a broken page: every link falls back to the
-    // release page, which is one extra click and always correct.
-    console.error("Could not read the latest release", error);
+    // Letting this throw is the point. A failed lookup must never replace a
+    // page that was working: when a render throws during revalidation, Next
+    // keeps serving the last one that succeeded, so a rate-limited minute is
+    // invisible. Swallowing the error instead is what turned every download
+    // button into a link to the releases page — the whole page degrades
+    // because one request lost a race.
+    //
+    // The build is the exception: there is no previous page to keep, and
+    // failing a deploy over GitHub being busy is worse than shipping links
+    // that degrade for one revalidation window and then heal.
+    if (process.env.NEXT_PHASE !== "phase-production-build") throw error;
+
+    console.error("Could not read the latest release at build time", error);
     return UNKNOWN;
   }
 });

@@ -38,8 +38,16 @@ feed it reads is public and unauthenticated.
 
 ## Environment variables
 
-None. The only external call the site makes is to the public release feed, and
-that needs no key.
+None are required — the release feed is public.
+
+| Variable | Purpose |
+| --- | --- |
+| `GITHUB_TOKEN` | Optional. Any token with no scopes will do; it only raises the API rate limit. |
+
+Unauthenticated, GitHub allows 60 requests an hour **per IP**, and a hosted
+deployment's egress IP is shared — someone else's traffic can spend the budget.
+The site is built to survive that (see [Downloads](#downloads)), but setting a
+token lifts the ceiling to 5000 and makes it a non-event.
 
 ## Commands
 
@@ -120,11 +128,22 @@ release. `lib/release.ts` reads
 skipping `latest.json`, the `.sig` files and `.app.tar.gz`, which belong to the
 app's own updater rather than to a person.
 
-The call is a cached `fetch` with `revalidate: 3600`, so the page stays fully
-static: a new release appears on the site within the hour, and the
-unauthenticated GitHub rate limit is never in play no matter the traffic. When
-the lookup fails, every link falls back to the release page — one extra click,
-never a wrong file.
+The call is a cached `fetch` with `revalidate: 300`, so the page stays fully
+static and a new release reaches the site within five minutes. The lookup runs
+once per window per region that gets traffic, never once per visitor.
+
+**A failed lookup must never degrade a page that was working**, and getting
+that wrong is a real outage, not a cosmetic one: the fallback points every
+download button at the releases page, so one lost request replaces the whole
+download experience with "go find it yourself on GitHub". So `getLatestRelease`
+lets the error through. When a render throws during revalidation Next keeps
+serving the last one that succeeded, which makes a rate-limited minute
+invisible.
+
+The build is the one exception: there is no previous page to keep, so a failure
+there degrades to the release page rather than failing the deploy, and heals on
+the next revalidation. That is what `NEXT_PHASE` is doing in that file — it is
+not a cache trick.
 
 Which platform leads is decided by the boot script in `layout.tsx`, which tags
 `<html>` with `os-mac` or `os-win` before first paint; `globals.css` shows the
