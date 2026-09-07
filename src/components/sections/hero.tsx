@@ -37,7 +37,7 @@ export async function Hero() {
               as="p"
               index={0}
               step={STEP}
-              className="hidden font-mono text-xs text-muted-foreground sm:block"
+              className="hidden text-sm tabular-nums text-muted-foreground sm:block"
             >
               {release.version}
             </Reveal>

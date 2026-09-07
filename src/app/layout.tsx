@@ -1,18 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Nunito } from "next/font/google";
 
 import { MotionRuntime } from "@/components/motion-runtime";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// El sitio pide SF Pro Rounded. Es una tipografía del sistema de Apple y su
+// licencia no permite servirla como fuente web, así que se pide por el nombre
+// genérico `ui-rounded` (ver --font-sans en globals.css): en macOS, iOS y
+// iPadOS eso resuelve exactamente a SF Pro Rounded, ya instalada, sin descargar
+// un solo byte.
+//
+// Fuera de Apple ese nombre no resuelve a nada redondeado, y la mitad del
+// público de esta app está en Windows. Nunito es el respaldo: geométrica y de
+// terminaciones redondeadas, es lo más parecido que hay con licencia abierta.
+// Va con `preload: false` a propósito — el navegador sólo descarga una fuente
+// cuando de verdad la necesita para pintar, así que quien está en Apple resuelve
+// en `ui-rounded` y nunca la pide.
+const rounded = Nunito({
+  variable: "--font-rounded",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -87,7 +96,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="es"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${rounded.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />

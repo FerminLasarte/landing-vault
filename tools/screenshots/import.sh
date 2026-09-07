@@ -35,13 +35,29 @@ for file in "$SRC"/*.png; do
     continue
   fi
 
-  if [[ ! "$name" =~ -(light|dark)\.png$ ]]; then
+  if [[ ! "$name" =~ ^(.+)-(light|dark)\.png$ ]]; then
     echo "SALTEADA  $name — falta el sufijo -light o -dark."
     continue
   fi
 
-  cp "$file" "$DEST/$name"
-  echo "OK        $name  ${width}x${height}"
+  screen="${BASH_REMATCH[1]}"
+  theme="${BASH_REMATCH[2]}"
+
+  # El nombre lleva un hash del contenido. Reemplazar una captura conservando el
+  # nombre deja la URL igual, y toda caché que ya respondió por esa URL sigue
+  # respondiendo con los bytes viejos: la del navegador, y en producción la del
+  # CDN, que es la que importa — se deployea una captura nueva y los visitantes
+  # siguen viendo la anterior. Borrar el archivo viejo no cambia nada, porque la
+  # copia rancia no está en el disco. Un nombre distinto es una URL distinta.
+  hash="$(shasum -a 256 "$file" | cut -c1-8)"
+  target="$screen-$theme.$hash.png"
+
+  # Fuera las versiones anteriores de esta misma pantalla, o se acumularían.
+  find "$DEST" -maxdepth 1 -name "$screen-$theme.*.png" -delete
+  rm -f "$DEST/$screen-$theme.png"
+
+  cp "$file" "$DEST/$target"
+  echo "OK        $target  ${width}x${height}"
   found=$((found + 1))
 done
 

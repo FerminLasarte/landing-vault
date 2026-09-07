@@ -104,7 +104,7 @@ export async function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {site.name}
           </p>
-          <p className="font-mono text-xs">
+          <p className="tabular-nums">
             {release.version ? `${release.version} · ` : ""}macOS · Windows
           </p>
         </div>

@@ -75,7 +75,7 @@ export function Features() {
                 <Reveal
                   as="p"
                   index={0}
-                  className="font-mono text-xs text-muted-foreground"
+                  className="text-sm font-medium tabular-nums text-muted-foreground"
                 >
                   {String(index + 1).padStart(2, "0")}
                 </Reveal>

@@ -1,12 +1,14 @@
-import { existsSync, openSync, readSync, closeSync } from "node:fs";
+import { existsSync, openSync, readSync, closeSync, readdirSync } from "node:fs";
 import path from "node:path";
+
+import { cache } from "react";
 
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
-// Captures live in public/screenshots as "<name>-light.png" / "<name>-dark.png".
-// Both are required: the site follows the visitor's theme, and a light
+// Captures live in public/screenshots, one pair per screen. Both halves are
+// required: the site follows the visitor's theme, and a light
 // screenshot on a dark page reads as a bug.
 //
 // They are captures of the real macOS window — traffic lights and all — taken
@@ -34,18 +36,52 @@ function readPngSize(file: string): { width: number; height: number } | null {
   }
 }
 
+// Capture files carry a hash of their own contents: "estadisticas-light.a1b2c3d4.png".
+//
+// Without it, replacing a screenshot leaves the URL untouched, and every cache
+// that already answered for that URL keeps answering with the old bytes —
+// the browser's, and in production the CDN's, which is the one that matters:
+// deploying a new screenshot would show the previous one to visitors until an
+// edge decided to revalidate. Deleting the old file changes nothing, because
+// the stale copy does not live on disk. A different name is a different URL,
+// and a URL nobody has seen cannot be stale.
+//
+// The hash is put there by tools/screenshots/import.sh; the directory is read
+// here so the component never has to be told what it is.
+const SHOT_PATTERN = /^(.+?)-(light|dark)(?:\.[0-9a-f]{6,})?\.png$/;
+
+// One `readdir` for the whole render rather than one per capture. This is a
+// Server Component and the page is static, so it happens at build time.
+const readShotIndex = cache((): Map<string, string> => {
+  const index = new Map<string, string>();
+  const dir = path.join(process.cwd(), "public", "screenshots");
+  if (!existsSync(dir)) return index;
+
+  for (const file of readdirSync(dir)) {
+    const match = SHOT_PATTERN.exec(file);
+    if (match) index.set(`${match[1]}-${match[2]}`, file);
+  }
+  return index;
+});
+
 // A slot with no capture yet falls back to a labelled placeholder instead of a
 // broken <img>. This is a Server Component, so the disk access costs nothing at
 // runtime — and it can come out once every screenshot exists.
 function findShot(name: string) {
-  const light = `/screenshots/${name}-light.png`;
-  const dark = `/screenshots/${name}-dark.png`;
-  const publicDir = path.join(process.cwd(), "public");
+  const index = readShotIndex();
+  const lightFile = index.get(`${name}-light`);
+  const darkFile = index.get(`${name}-dark`);
+  if (!lightFile || !darkFile) return null;
 
-  if (!existsSync(path.join(publicDir, dark))) return null;
+  const publicDir = path.join(process.cwd(), "public", "screenshots");
+  const size = readPngSize(path.join(publicDir, lightFile));
+  if (!size) return null;
 
-  const size = readPngSize(path.join(publicDir, light));
-  return size ? { light, dark, ...size } : null;
+  return {
+    light: `/screenshots/${lightFile}`,
+    dark: `/screenshots/${darkFile}`,
+    ...size,
+  };
 }
 
 interface AppShotProps {
@@ -91,8 +127,8 @@ export function AppShot({
           <p className="px-6 text-center text-sm text-muted-foreground">
             {alt}
             <br />
-            <span className="font-mono text-xs">
-              {name}-light.png · {name}-dark.png
+            <span className="text-xs tabular-nums">
+              {name}-light · {name}-dark
             </span>
           </p>
         </div>

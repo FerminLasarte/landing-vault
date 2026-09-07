@@ -76,7 +76,7 @@ function Meta({ version, asset }: { version: string | null; asset?: Asset | null
   if (parts.length === 0) return null;
 
   return (
-    <p className="font-mono text-sm text-muted-foreground">{parts.join(" · ")}</p>
+    <p className="text-sm tabular-nums text-muted-foreground">{parts.join(" · ")}</p>
   );
 }
 

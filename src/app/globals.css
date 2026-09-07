@@ -7,8 +7,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* `ui-rounded` es el nombre genérico que en las plataformas de Apple resuelve
+     a SF Pro Rounded, la fuente instalada — no hay descarga ni licencia web de
+     por medio. Nunito cubre al resto con la misma silueta redondeada, y los
+     últimos nombres son el piso para cuando tampoco esté. */
+  --font-sans:
+    ui-rounded, "SF Pro Rounded", var(--font-rounded), "Segoe UI Variable",
+    system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -186,19 +191,20 @@
 
   /* Versalitas con mucho interletrado y un puntito delante es el sello de la
      plantilla genérica: aparece en cada landing generada del último año. Acá la
-     etiqueta es monoespaciada y en caja normal — la misma familia que la app
-     usa para sus cifras, así que se lee como un dato del producto y no como un
-     adorno de sección. El número la ancla en el índice de la página. */
+     etiqueta va en caja normal, al tamaño del texto menor, y lo que la ordena
+     es el número que la precede: convierte cuatro rótulos sueltos en el índice
+     del recorrido. */
   .eyebrow {
     display: inline-flex;
     align-items: baseline;
     gap: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    letter-spacing: -0.01em;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
     color: var(--muted-foreground);
   }
 
+  /* Cifras de ancho fijo, para que el índice no baile entre secciones. */
   .eyebrow-index {
     color: var(--foreground);
     font-variant-numeric: tabular-nums;

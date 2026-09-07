@@ -30,10 +30,6 @@ const QUESTIONS = [
     q: "¿Qué pasa si pierdo la computadora?",
     a: "Los datos se pierden con ella, igual que cualquier archivo tuyo. Por eso la app insiste con las copias de seguridad: guardalas en un disco externo o donde tengas tus respaldos.",
   },
-  {
-    q: "¿Y la parte de IA?",
-    a: "Está en el plan, no en la app. Cuando llegue va a ser opcional y explícita: nada se procesa afuera sin que lo pidas.",
-  },
 ] as const;
 
 export function Faq() {
