@@ -8,6 +8,10 @@ import { cn } from "@/lib/utils";
 // Captures live in public/screenshots as "<name>-light.png" / "<name>-dark.png".
 // Both are required: the site follows the visitor's theme, and a light
 // screenshot on a dark page reads as a bug.
+//
+// They are captures of the real macOS window — traffic lights and all — taken
+// at 2880px wide so the hero, which displays one at up to 1376 CSS px, still
+// has two device pixels per CSS pixel to work with. See tools/screenshots.
 
 // Reads width and height out of the PNG header (IHDR is always the first
 // chunk, so the first 24 bytes are enough). The captures are trimmed to their
@@ -49,9 +53,10 @@ interface AppShotProps {
   alt: string;
   priority?: boolean;
   className?: string;
-  // Opt into the reveal transition, and let the caller place it in a stagger.
-  reveal?: "shot" | false;
-  revealStyle?: React.CSSProperties;
+  // Opt into the scroll-linked growth. Off for anything that is already at rest
+  // when it appears.
+  rise?: boolean;
+  sizes?: string;
 }
 
 // A window-shaped frame for captures of the desktop app. The hairline border
@@ -62,51 +67,57 @@ export function AppShot({
   alt,
   priority = false,
   className,
-  reveal = "shot",
-  revealStyle,
+  rise = true,
+  sizes = "(min-width: 1024px) 50vw, 100vw",
 }: AppShotProps) {
   const shot = findShot(name);
+  const motion = rise ? { "data-rise": "" } : {};
+  // `bg-background` rather than `bg-card`: the captures include the real macOS
+  // window, whose corners are transparent and rounded tighter than this frame.
+  // The sliver between the two arcs shows this colour, and the app's own window
+  // background is the page background in both themes — so it disappears.
   const frame = cn(
-    "overflow-hidden rounded-xl border border-border bg-muted",
+    "overflow-hidden rounded-2xl border border-border bg-background",
     className,
   );
-  const motion = reveal ? { "data-reveal": reveal, style: revealStyle } : {};
 
   if (!shot) {
     return (
-      <div
-        {...motion}
-        className={cn(frame, "flex items-center justify-center border-dashed")}
-        style={{ aspectRatio: "2048 / 1285", ...revealStyle }}
-      >
-        <p className="px-6 text-center text-sm text-muted-foreground">
-          {alt}
-          <br />
-          <span className="font-mono text-xs">
-            {name}-light.png · {name}-dark.png
-          </span>
-        </p>
+      <div {...motion} className={cn(frame, "border-dashed bg-surface")}>
+        <div
+          className="flex items-center justify-center"
+          style={{ aspectRatio: "2880 / 1784" }}
+        >
+          <p className="px-6 text-center text-sm text-muted-foreground">
+            {alt}
+            <br />
+            <span className="font-mono text-xs">
+              {name}-light.png · {name}-dark.png
+            </span>
+          </p>
+        </div>
       </div>
     );
   }
 
+  // `alt` stays out of the shared object and on each element: spreading it
+  // works, but it hides the attribute from the a11y lint rule that exists to
+  // catch a missing one.
+  const image = {
+    width: shot.width,
+    height: shot.height,
+    sizes,
+    priority,
+  };
+
   return (
     <div {...motion} className={frame}>
+      <Image {...image} alt={alt} src={shot.light} className="h-auto w-full dark:hidden" />
       <Image
-        src={shot.light}
+        {...image}
         alt={alt}
-        width={shot.width}
-        height={shot.height}
-        className="h-auto w-full dark:hidden"
-        priority={priority}
-      />
-      <Image
         src={shot.dark}
-        alt={alt}
-        width={shot.width}
-        height={shot.height}
         className="hidden h-auto w-full dark:block"
-        priority={priority}
       />
     </div>
   );

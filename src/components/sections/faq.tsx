@@ -1,3 +1,5 @@
+import { Plus } from "lucide-react";
+
 import { Section, SectionHeading } from "@/components/ui/section";
 import { revealDelay } from "@/lib/reveal";
 
@@ -36,31 +38,36 @@ const QUESTIONS = [
 
 export function Faq() {
   return (
-    <Section id="preguntas">
-      <SectionHeading eyebrow="Preguntas" title="Preguntas frecuentes" />
+    <Section id="preguntas" tone="raised">
+      <div className="grid gap-14 lg:grid-cols-12 lg:gap-x-8">
+        <SectionHeading
+          eyebrow="Preguntas"
+          index="03"
+          title="Lo que suelen preguntar"
+          className="lg:col-span-4 lg:sticky lg:top-32 lg:self-start"
+        />
 
-      <div className="mt-12 border-t border-border">
-        {QUESTIONS.map((item, index) => (
-          <details
-            key={item.q}
-            data-reveal
-            style={revealDelay(index, 60)}
-            className="group border-b border-border"
-          >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 font-medium transition-colors hover:text-muted-foreground">
-              {item.q}
-              <span
-                aria-hidden
-                className="text-muted-foreground transition-transform group-open:rotate-45"
-              >
-                +
-              </span>
-            </summary>
-            <p className="pb-5 text-sm leading-relaxed text-muted-foreground text-pretty sm:max-w-2xl">
-              {item.a}
-            </p>
-          </details>
-        ))}
+        <div className="lg:col-span-7 lg:col-start-6">
+          {QUESTIONS.map((item, index) => (
+            <details
+              key={item.q}
+              data-reveal
+              style={revealDelay(index, 60)}
+              className="group border-b border-border first:border-t"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-8 py-6 text-lead font-medium transition-colors duration-300 hover:text-muted-foreground">
+                {item.q}
+                <Plus
+                  aria-hidden
+                  className="size-4 shrink-0 text-muted-foreground transition-transform duration-500 ease-out-expo group-open:rotate-135"
+                />
+              </summary>
+              <p className="max-w-2xl pb-7 leading-relaxed text-muted-foreground text-pretty">
+                {item.a}
+              </p>
+            </details>
+          ))}
+        </div>
       </div>
     </Section>
   );

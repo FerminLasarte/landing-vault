@@ -1,11 +1,12 @@
 import { AppShot } from "@/components/ui/app-shot";
 import { Section, SectionHeading } from "@/components/ui/section";
-import { revealDelay } from "@/lib/reveal";
+import { Reveal } from "@/components/ui/reveal";
+import { cn } from "@/lib/utils";
 
-// Three groups rather than a grid of loose features: each one answers a
+// Three chapters rather than a grid of loose features: each one answers a
 // different question ("¿qué cargo?", "¿qué veo?", "¿qué planifico?"), and the
-// screenshot that belongs to it sits next to it.
-const GROUPS = [
+// capture that belongs to it sits next to it.
+const CHAPTERS = [
   {
     title: "Registrás todo en un solo lugar",
     lead: "Ingresos, gastos y transferencias entre tus propias cuentas. Cada movimiento con su categoría, su medio de pago y, si hace falta, el comprobante adjunto.",
@@ -15,7 +16,7 @@ const GROUPS = [
       "Etiquetas y comprobantes adjuntos en cualquier movimiento.",
       "Importación y exportación en CSV.",
     ],
-    shot: { name: "transacciones", alt: "Listado de transacciones" },
+    shots: [{ name: "transacciones", alt: "Listado de movimientos con categoría, cuenta y tipo" }],
   },
   {
     title: "Ves a dónde se va la plata",
@@ -25,7 +26,7 @@ const GROUPS = [
       "Presupuestos por categoría, mensuales o anuales, con lo que va consumido.",
       "Varias monedas a la vez, con la cotización del dólar MEP al día.",
     ],
-    shot: { name: "presupuestos", alt: "Presupuestos por categoría" },
+    shots: [{ name: "resumen", alt: "Resumen del mes: balance, gastos, presupuesto disponible y ahorro" }],
   },
   {
     title: "Planificás lo que viene",
@@ -35,61 +36,102 @@ const GROUPS = [
       "Compras en cuotas, con el saldo pendiente y las fechas siempre calculados.",
       "Metas de ahorro, con la proyección de si llegás a la fecha que te pusiste.",
     ],
-    shot: { name: "recurrentes", alt: "Gastos recurrentes pendientes de confirmar" },
+    shots: [
+      { name: "compromisos", alt: "Compromisos: movimientos recurrentes esperando confirmación" },
+      { name: "ahorros", alt: "Objetivos de ahorro, con el ritmo y la fecha en que se alcanzarían" },
+    ],
   },
 ] as const;
 
+// The narrow text column runs taller than the capture beside it, which is what
+// makes the sticky worth having: the screenshot holds still while its own list
+// of claims scrolls past it, and releases when the chapter ends. It is the
+// section's whole gesture, and it costs one class.
 export function Features() {
   return (
-    <Section id="producto">
+    <Section id="producto" tone="raised">
       <SectionHeading
         eyebrow="Producto"
+        index="01"
         title="Todo lo que necesitás para llevar tus cuentas"
         lead="Sin funciones de más ni pantallas que no vas a abrir nunca."
       />
 
-      <div className="mt-16 flex flex-col gap-20">
-        {GROUPS.map((group, index) => (
-          <div
-            key={group.title}
-            className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16"
-          >
-            <div className={index % 2 === 1 ? "lg:order-2" : undefined}>
-              <h3
-                data-reveal
-                style={revealDelay(0)}
-                className="text-xl font-semibold tracking-tight"
-              >
-                {group.title}
-              </h3>
-              <p
-                data-reveal
-                style={revealDelay(1)}
-                className="mt-3 leading-relaxed text-muted-foreground text-pretty"
-              >
-                {group.lead}
-              </p>
-              <ul className="mt-6 flex flex-col gap-3">
-                {group.items.map((item, itemIndex) => (
-                  <li
-                    key={item}
-                    data-reveal
-                    style={revealDelay(2 + itemIndex)}
-                    className="border-l border-border pl-4 text-sm leading-relaxed text-muted-foreground"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <div className="mt-24 flex flex-col gap-28 sm:mt-32 lg:gap-36">
+        {CHAPTERS.map((chapter, index) => {
+          const flipped = index % 2 === 1;
 
-            <AppShot
-              name={group.shot.name}
-              alt={group.shot.alt}
-              revealStyle={revealDelay(1)}
-            />
-          </div>
-        ))}
+          return (
+            <article
+              key={chapter.title}
+              className="grid items-start gap-12 lg:grid-cols-12 lg:gap-x-8"
+            >
+              <div
+                className={cn(
+                  "lg:col-span-4",
+                  flipped ? "lg:order-2 lg:col-start-9" : "lg:col-start-1",
+                )}
+              >
+                <Reveal
+                  as="p"
+                  index={0}
+                  className="font-mono text-xs text-muted-foreground"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </Reveal>
+                <Reveal
+                  as="h3"
+                  variant="line"
+                  index={1}
+                  className="mt-4 text-subtitle font-semibold text-balance"
+                >
+                  {chapter.title}
+                </Reveal>
+                <Reveal
+                  as="p"
+                  index={2}
+                  className="mt-4 leading-relaxed text-muted-foreground text-pretty"
+                >
+                  {chapter.lead}
+                </Reveal>
+
+                <ul className="mt-8 flex flex-col gap-5">
+                  {chapter.items.map((item, itemIndex) => (
+                    <Reveal
+                      key={item}
+                      as="li"
+                      index={3 + itemIndex}
+                      className="text-sm leading-relaxed text-muted-foreground"
+                    >
+                      {item}
+                    </Reveal>
+                  ))}
+                </ul>
+              </div>
+
+              {/* La columna se fija sólo cuando lleva una captura: con dos,
+                  ya es más alta que el texto de al lado y no hay nada que
+                  fijar — quedaría clavada mostrando la primera mientras la
+                  segunda queda fuera de la pantalla. */}
+              <div
+                className={cn(
+                  "flex flex-col gap-8 lg:col-span-7",
+                  chapter.shots.length === 1 && "lg:sticky lg:top-28",
+                  flipped ? "lg:order-1 lg:col-start-1" : "lg:col-start-6",
+                )}
+              >
+                {chapter.shots.map((shot) => (
+                  <AppShot
+                    key={shot.name}
+                    name={shot.name}
+                    alt={shot.alt}
+                    sizes="(min-width: 1024px) 58vw, 100vw"
+                  />
+                ))}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </Section>
   );
