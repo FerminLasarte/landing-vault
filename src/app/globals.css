@@ -54,7 +54,7 @@
      breakpoints, so the headline is the same proportion of the screen on a
      phone and on a 27". Tracking tightens as the size grows — large text set
      at body tracking always looks loose. */
-  --text-display: clamp(2.625rem, 1rem + 6.6vw, 5.5rem);
+  --text-display: clamp(2.625rem, 0.9rem + 6.6vw, 6.5rem);
   --text-display--line-height: 0.95;
   --text-display--letter-spacing: -0.045em;
 
@@ -477,6 +477,87 @@
       animation-timeline: view();
       animation-range: entry 5% cover 42%;
     }
+  }
+}
+
+/* ----------------------------------------------------------------- el hero
+
+   Tres gestos que sólo existen acá arriba, porque son los que tienen que
+   convencer a alguien de seguir bajando.
+
+   El primero es la paralaje: el texto sube un poco más rápido que la página y
+   se apaga mientras sale, así que el pliegue tiene profundidad en cuanto tocás
+   la rueda. Va sobre `scroll()` en vez de `view()` porque el elemento arranca
+   ya visible y lo que interesa medir es el recorrido del documento, no el del
+   elemento contra la ventana. */
+
+@keyframes hero-lift {
+  to {
+    transform: translateY(-3rem);
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    [data-hero-lift] {
+      animation: hero-lift linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 85vh;
+    }
+  }
+}
+
+/* El segundo es la inclinación: la captura sigue al puntero un grado y medio,
+   apenas lo suficiente para que se lea como un objeto con volumen en vez de una
+   imagen pegada. Los valores los escribe el runtime de movimiento; sin puntero
+   —un teléfono— se quedan en cero y no pasa nada. La perspectiva vive en el
+   padre porque un elemento no puede darse profundidad a sí mismo, y el
+   `data-rise` de adentro conserva su propia transformación sin pisarse con
+   ésta. */
+.tilt-stage {
+  perspective: 1800px;
+}
+
+.tilt-stage > [data-tilt] {
+  transform: rotateX(calc(var(--ty, 0) * -1.3deg))
+    rotateY(calc(var(--tx, 0) * 1.8deg));
+  transform-style: preserve-3d;
+  transition: transform 600ms var(--ease-out-expo);
+}
+
+/* El tercero es el indicador de scroll: una línea corta con un segmento que la
+   recorre hacia abajo, en bucle. Es la única animación de la página que no
+   espera a nada — está para decir que hay más. */
+.cue-track {
+  position: relative;
+  display: block;
+  inline-size: 1px;
+  block-size: 2.75rem;
+  overflow: hidden;
+  background-color: var(--border);
+}
+
+.cue-track::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  block-size: 45%;
+  background-color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cue-track::after {
+    animation: cue-travel 2.4s var(--ease-out-quint) infinite;
+  }
+}
+
+@keyframes cue-travel {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(222%);
   }
 }
 

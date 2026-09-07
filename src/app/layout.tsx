@@ -76,9 +76,15 @@ const bootScript = `
   // builds for get a class; Linux and phones fall through to the block that
   // offers both, which is also what a visitor without JavaScript sees.
   try {
+    // El user agent va último y no es un lujo: navigator.platform está obsoleto
+    // y los navegadores lo están vaciando — un Safari al día en macOS devuelve
+    // cadena vacía, la cadena entera se cae, y un usuario de Mac termina viendo
+    // el bloque neutro con los dos botones en vez del suyo. El user agent, en
+    // cambio, siempre está y dice "Macintosh" o "Windows".
     var platform =
       (navigator.userAgentData && navigator.userAgentData.platform) ||
       navigator.platform ||
+      navigator.userAgent ||
       "";
     if (/win/i.test(platform)) {
       root.classList.add("os-win");
