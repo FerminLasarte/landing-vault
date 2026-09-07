@@ -133,48 +133,61 @@ export function MotionRuntime() {
     // the one thing on the page that reacts to the visitor rather than to the
     // scroll, and it is what stops the fold from feeling like a poster.
     //
+    // The stage is resolved inside the handler rather than captured on mount.
+    // Holding a node reference from mount time ties this to the order in which
+    // the tree commits, which is exactly the kind of dependency that works
+    // until a section becomes async and then fails silently — and a listener
+    // that quietly never fires is worse than one that throws. Delegation costs
+    // one `closest` per frame and cannot go stale.
+    //
     // Only two custom properties are written, and only while the pointer is
-    // over the stage; the easing back to rest is the CSS transition's job, not
-    // this listener's. Anything without a pointer — a phone — simply never
-    // fires it and the values stay at zero.
-    const stage = document.querySelector<HTMLElement>(".tilt-stage");
-    const tilt = stage?.querySelector<HTMLElement>("[data-tilt]") ?? null;
+    // over the stage; easing back to rest is the CSS transition's job. Anything
+    // without a pointer — a phone — never fires this at all.
     let tiltFrame = 0;
+    let tiltTarget: HTMLElement | null = null;
     let pointer: { x: number; y: number } | null = null;
 
     function applyTilt() {
       tiltFrame = 0;
-      if (!tilt || !stage || !pointer) return;
+      const stage = tiltTarget?.parentElement;
+      if (!tiltTarget || !stage || !pointer) return;
 
       const rect = stage.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
 
       // -1 .. 1 from the centre of the stage.
-      tilt.style.setProperty(
+      tiltTarget.style.setProperty(
         "--tx",
         (((pointer.x - rect.left) / rect.width) * 2 - 1).toFixed(3),
       );
-      tilt.style.setProperty(
+      tiltTarget.style.setProperty(
         "--ty",
         (((pointer.y - rect.top) / rect.height) * 2 - 1).toFixed(3),
       );
     }
 
+    function releaseTilt() {
+      pointer = null;
+      tiltTarget?.style.removeProperty("--tx");
+      tiltTarget?.style.removeProperty("--ty");
+      tiltTarget = null;
+    }
+
     function onPointerMove(event: PointerEvent) {
-      if (event.pointerType !== "mouse") return;
+      if (reduced || event.pointerType !== "mouse") return;
+
+      const stage = (event.target as Element | null)?.closest?.(".tilt-stage");
+      const target = stage?.querySelector<HTMLElement>("[data-tilt]") ?? null;
+
+      // Left the stage — or never was on one.
+      if (!target) {
+        if (tiltTarget) releaseTilt();
+        return;
+      }
+
+      tiltTarget = target;
       pointer = { x: event.clientX, y: event.clientY };
       if (!tiltFrame) tiltFrame = window.requestAnimationFrame(applyTilt);
-    }
-
-    function onPointerLeave() {
-      pointer = null;
-      tilt?.style.removeProperty("--tx");
-      tilt?.style.removeProperty("--ty");
-    }
-
-    if (tilt && !reduced) {
-      stage?.addEventListener("pointermove", onPointerMove);
-      stage?.addEventListener("pointerleave", onPointerLeave);
     }
 
     // The mobile menu is a native <details>, so opening it needs no script at
@@ -191,13 +204,17 @@ export function MotionRuntime() {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     document.addEventListener("click", onClick);
+    document.addEventListener("pointermove", onPointerMove, { passive: true });
+    // Salir de la ventana entera no genera ningún `pointermove` más, así que sin
+    // esto la captura se quedaría torcida en el último ángulo para siempre.
+    document.addEventListener("pointerleave", releaseTilt);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       document.removeEventListener("click", onClick);
-      stage?.removeEventListener("pointermove", onPointerMove);
-      stage?.removeEventListener("pointerleave", onPointerLeave);
+      document.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("pointerleave", releaseTilt);
       if (frame) window.cancelAnimationFrame(frame);
       if (tiltFrame) window.cancelAnimationFrame(tiltFrame);
       observer?.disconnect();

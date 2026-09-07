@@ -95,10 +95,10 @@ export async function Hero() {
           <Reveal index={6} step={STEP} className="mt-14 sm:mt-16">
             <Link
               href="#producto"
-              className="group inline-flex items-end gap-4 text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground"
+              className="inline-flex items-center gap-5 text-sm font-medium text-muted-foreground transition-colors duration-300 hover:text-foreground"
             >
               <span className="cue-track" aria-hidden />
-              <span className="pb-0.5">Ver qué hace</span>
+              Ver qué hace
             </Link>
           </Reveal>
         </div>
