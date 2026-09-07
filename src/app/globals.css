@@ -14,6 +14,7 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-surface: var(--surface);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -33,15 +34,48 @@
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
+
+  /* One easing curve for the whole site. Everything decelerates the same way,
+     which is what makes unrelated elements read as one system rather than as
+     a pile of separate effects. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* The one looping animation on the site: the arrow that says the page
+     continues below the fold. */
+  --animate-bob: bob 2.6s var(--ease-out-quint) infinite;
+
+  /* Fluid type. The sizes interpolate with the viewport instead of jumping at
+     breakpoints, so the headline is the same proportion of the screen on a
+     phone and on a 27". Tracking tightens as the size grows — large text set
+     at body tracking always looks loose. */
+  --text-display: clamp(2.625rem, 1rem + 6.6vw, 5.5rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.045em;
+
+  --text-title: clamp(1.875rem, 1.15rem + 2.6vw, 3.25rem);
+  --text-title--line-height: 1.05;
+  --text-title--letter-spacing: -0.035em;
+
+  --text-subtitle: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
+  --text-subtitle--line-height: 1.2;
+  --text-subtitle--letter-spacing: -0.02em;
+
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+  --text-lead--letter-spacing: -0.01em;
 }
 
 /* Mirrors the token set of the desktop app (src/index.css there): pure
-   neutrals in OKLCH, with red for errors as the only chromatic value. */
+   neutrals in OKLCH, with red for errors as the only chromatic value.
+   `--surface` is the one addition — a barely-there raised tone that lets one
+   section sit on top of another without a rule between them. */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
+  --surface: oklch(0.981 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
@@ -62,6 +96,7 @@
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
+  --surface: oklch(0.178 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
@@ -85,20 +120,238 @@
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
+    /* The page is a single column of full-width bands; a stray wide child
+       should clip rather than let the whole document scroll sideways. */
+    overflow-x: clip;
   }
 
   /* Anchor links land below the sticky header instead of under it. */
   :target {
-    scroll-margin-top: 6rem;
+    scroll-margin-top: 7rem;
+  }
+
+  ::selection {
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+}
+
+/* ------------------------------------------------------------------ layout
+
+   Sections are separated by rhythm and tone, never by a rule. The tonal step
+   between `base` and `raised` is under 2% of luminance — enough for the eye to
+   register a new surface, too little to read as a hard edge. `invert` is the
+   exception and the punctuation: one panel, at the end, that flips the whole
+   token set so every child inside it inverts without knowing it did. */
+
+@layer components {
+  .section {
+    padding-block: clamp(5.5rem, 11vw, 10rem);
+    /* Tone changes are announced rather than snapped, which matters when the
+       theme toggle flips every surface at once. */
+    transition: background-color 400ms ease;
+  }
+
+  .section[data-tone="raised"] {
+    background-color: var(--surface);
+  }
+
+  .section[data-tone="invert"] {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  /* Redefining the tokens — rather than restyling the children — is what lets
+     the download block, the buttons and the muted copy drop into the closing
+     panel unchanged. */
+  [data-tone="invert"] {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --surface: oklch(0.205 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --accent: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --border: oklch(1 0 0 / 14%);
+    --ring: oklch(0.708 0 0);
+  }
+
+  /* In dark mode the panel lifts instead of flipping: a white block on a dark
+     page is a flashbulb, not emphasis. */
+  .dark [data-tone="invert"] {
+    --background: oklch(0.205 0 0);
+    --surface: oklch(0.269 0 0);
+  }
+
+  /* Versalitas con mucho interletrado y un puntito delante es el sello de la
+     plantilla genérica: aparece en cada landing generada del último año. Acá la
+     etiqueta es monoespaciada y en caja normal — la misma familia que la app
+     usa para sus cifras, así que se lee como un dato del producto y no como un
+     adorno de sección. El número la ancla en el índice de la página. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: -0.01em;
+    color: var(--muted-foreground);
+  }
+
+  .eyebrow-index {
+    color: var(--foreground);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ------------------------------------------------------------------ botones
+
+   Un botón con carácter, no una caja que cambia de opacidad. Tres gestos que
+   ocurren juntos: el relleno sube desde abajo, la etiqueta rota hacia arriba
+   mostrando su copia, y el ícono sale por abajo y vuelve a entrar por arriba.
+   Todo con la misma curva del resto del sitio, así que se lee como un gesto
+   del sistema y no como un efecto pegado encima. */
+
+@layer components {
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    padding: 0.8125rem 1.375rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    transition:
+      transform 500ms var(--ease-out-expo),
+      color 350ms var(--ease-out-expo),
+      border-color 350ms var(--ease-out-expo);
+  }
+
+  /* El relleno de hover es una capa sólida que escala: sin degradados, sin
+     sombras, y compuesta en GPU en vez de repintar el fondo. */
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: 50% 100%;
+    transition: transform 550ms var(--ease-out-expo);
+  }
+
+  .btn:hover::before,
+  .btn:focus-visible::before {
+    transform: scaleY(1);
+  }
+
+  .btn:active {
+    transform: scale(0.975);
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  .btn-lg {
+    padding: 1rem 1.75rem;
+    font-size: 1rem;
+    border-radius: var(--radius-xl);
+    gap: 0.75rem;
+  }
+
+  .btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .btn-primary::before {
+    background-color: var(--foreground);
+  }
+
+  .btn-secondary {
+    border: 1px solid var(--border);
+    background-color: transparent;
+    color: var(--foreground);
+  }
+
+  .btn-secondary::before {
+    background-color: var(--secondary);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--muted-foreground);
+  }
+
+  /* Etiqueta e ícono comparten la misma mecánica: dos copias apiladas en una
+     única celda de grilla, recortadas por el contenedor, que se desplazan una
+     altura completa. La segunda copia va con aria-hidden desde el componente,
+     así que un lector de pantalla escucha el texto una sola vez. */
+  .btn-roll {
+    display: grid;
+    overflow: hidden;
+  }
+
+  .btn-roll > * {
+    grid-area: 1 / 1;
+    transition: transform 550ms var(--ease-out-expo);
+  }
+
+  .btn-roll > *:last-child {
+    transform: translateY(105%);
+  }
+
+  .btn:hover .btn-roll > *:first-child,
+  .btn:focus-visible .btn-roll > *:first-child {
+    transform: translateY(-105%);
+  }
+
+  .btn:hover .btn-roll > *:last-child,
+  .btn:focus-visible .btn-roll > *:last-child {
+    transform: translateY(0);
+  }
+
+  /* Enlace de texto: la subrayada crece desde la izquierda en vez de
+     aparecer. Mismo criterio que el botón, a menor escala. */
+  .link {
+    position: relative;
+    color: var(--muted-foreground);
+    transition: color 300ms var(--ease-out-expo);
+  }
+
+  .link::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: -2px;
+    block-size: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 450ms var(--ease-out-expo);
+  }
+
+  .link:hover {
+    color: var(--foreground);
+  }
+
+  .link:hover::after {
+    transform: scaleX(1);
   }
 }
 
 /* ---------------------------------------------------------------- movimiento
 
-   Un solo gesto para todo el sitio: el elemento entra desde 14px abajo con un
-   fundido, y desacelera. Nada rebota, nada se desplaza de costado, nada se
-   mueve dos veces. La variedad la dan el retardo y la distancia, no curvas
-   distintas por sección.
+   Un solo gesto de entrada para todo el sitio: el elemento sube 14px con un
+   fundido y desacelera. La variedad la dan el retardo y la distancia, no
+   curvas distintas por sección.
 
    Las reglas cuelgan de `.js`, que el script del layout pone antes del primer
    pintado. Sin JavaScript la clase nunca aparece, los elementos quedan
@@ -114,17 +367,9 @@
     opacity: 0;
     transform: translateY(14px);
     transition:
-      opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+      opacity 750ms var(--ease-out-expo),
+      transform 750ms var(--ease-out-expo);
     transition-delay: var(--reveal-delay, 0ms);
-  }
-
-  /* Las capturas son la pieza grande de cada sección: entran desde un poco más
-     abajo y con un punto menos de escala, lo suficiente para que se lean como
-     el sujeto del bloque y no como un elemento más de la lista. */
-  .js [data-reveal="shot"] {
-    transform: translateY(20px) scale(0.985);
-    transition-duration: 900ms;
   }
 
   /* Las filas de tabla se limitan al fundido: el soporte de `transform` sobre
@@ -134,9 +379,98 @@
     transform: none;
   }
 
+  /* Titulares por línea: el contenedor recorta y la línea sube desde abajo,
+     que es el gesto editorial que da el peso del hero. La animación necesita
+     dos elementos anidados — de ahí la variante propia. Lo estructural (que
+     cada línea sea una línea) vive fuera de esta media query: con
+     `prefers-reduced-motion` las líneas se quedaban en la misma renglón. */
+  .js [data-reveal="line"] {
+    overflow: hidden;
+    opacity: 1;
+    transform: none;
+    /* El recorte corta las colas de las letras; el padding devuelve el
+       espacio y el margen negativo lo saca del flujo. */
+    padding-block-end: 0.12em;
+    margin-block-end: -0.12em;
+  }
+
+  .js [data-reveal="line"] > * {
+    transform: translateY(110%);
+    transition: transform 1000ms var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .js [data-reveal="line"].is-visible > * {
+    transform: translateY(0);
+  }
+
   .js [data-reveal].is-visible {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* --------------------------------------------------------- scroll vinculado
+
+   La captura no entra: crece. `--p` va de 0 a 1 mientras el elemento cruza la
+   pantalla, y el transform se calcula a partir de ahí — un único punto de
+   control para escala, elevación e inclinación.
+
+   El valor lo maneja `animation-timeline: view()`, que corre en el compositor
+   y por lo tanto no puede trabarse con el hilo principal ocupado. Donde no
+   existe, el runtime de movimiento escribe `--p` a mano en cada cuadro; y si
+   tampoco hay JavaScript, el valor inicial de 1 deja la captura en su estado
+   final. Nunca se ve a medio camino. */
+
+[data-reveal="line"],
+[data-reveal="line"] > * {
+  display: block;
+}
+
+@property --p {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+/* Sin `will-change: transform` a propósito. Promovería a capa propia, de forma
+   permanente, cinco capturas de 2880px de ancho — que a densidad doble son
+   varios cientos de MB de textura retenidos durante toda la vida de la página,
+   a cambio de nada: el navegador promueve la capa igual mientras la animación
+   corre, que es el único momento en que hace falta. */
+[data-rise] {
+  transform: perspective(1400px) rotateX(calc((1 - var(--p)) * 2.2deg))
+    scale(calc(0.93 + 0.07 * var(--p)));
+  transform-origin: 50% 100%;
+}
+
+@keyframes bob {
+  0%,
+  55%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes rise {
+  from {
+    --p: 0;
+  }
+  to {
+    --p: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-rise] {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 42%;
+    }
   }
 }
 
@@ -163,18 +497,29 @@ html:not(.os-mac):not(.os-win) [data-os="other"] {
 
 /* La cabecera arranca fundida con el hero y sólo se separa del contenido
    cuando hay algo scrolleado debajo. Fondo sólido, no translúcido: el brief
-   descarta el vidrio esmerilado. */
+   descarta el vidrio esmerilado. Además se comprime, que es la señal de que
+   pasó a segundo plano. */
 .site-header {
-  border-color: transparent;
   background-color: transparent;
   transition:
-    background-color 300ms ease,
-    border-color 300ms ease;
+    background-color 400ms var(--ease-out-expo),
+    box-shadow 400ms var(--ease-out-expo);
+}
+
+.site-header-inner {
+  height: 5rem;
+  transition: height 400ms var(--ease-out-expo);
 }
 
 [data-scrolled="true"] .site-header {
-  border-color: var(--border);
   background-color: var(--background);
+  /* Una sombra de 1px es la hairline: no hay borde que animar y no aparece un
+     rectángulo antes de tiempo. */
+  box-shadow: 0 1px 0 0 var(--border);
+}
+
+[data-scrolled="true"] .site-header-inner {
+  height: 4rem;
 }
 
 /* El acordeón de preguntas se despliega en vez de saltar. `interpolate-size` y
@@ -189,13 +534,16 @@ html:not(.os-mac):not(.os-win) [data-os="other"] {
     details::details-content {
       block-size: 0;
       overflow: hidden;
+      opacity: 0;
       transition:
-        block-size 400ms cubic-bezier(0.16, 1, 0.3, 1),
-        content-visibility 400ms allow-discrete;
+        block-size 450ms var(--ease-out-expo),
+        opacity 350ms var(--ease-out-expo),
+        content-visibility 450ms allow-discrete;
     }
 
     details[open]::details-content {
       block-size: auto;
+      opacity: 1;
     }
   }
 }

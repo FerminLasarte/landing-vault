@@ -1,37 +1,73 @@
 import Link from "next/link";
+import { isValidElement, cloneElement, type ReactElement } from "react";
 
 import { cn } from "@/lib/utils";
 
 // Deliberately not the full shadcn Button: the site only ever needs two
-// weights of button, and both are links. Adding variants it does not use would
-// be inventing a component language the app does not have.
-const base =
-  "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-[background-color,color,transform] duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50";
-
+// weights, and both are links. The behaviour — fill sweep, label roll, icon
+// roll — lives in globals.css under `.btn`; what the component owns is the
+// duplication those rolls need, and keeping the copy out of the accessibility
+// tree.
 export const buttonVariants = {
-  primary: cn(base, "bg-primary text-primary-foreground hover:bg-primary/90"),
-  secondary: cn(
-    base,
-    "border border-border bg-background text-foreground hover:bg-accent",
-  ),
+  primary: "btn btn-primary",
+  secondary: "btn btn-secondary",
 } as const;
 
 type Variant = keyof typeof buttonVariants;
 
+interface ButtonContentProps {
+  icon?: ReactElement<{ "aria-hidden"?: boolean }>;
+  children: React.ReactNode;
+}
+
+// Both copies are rendered by the same component so the two can never drift
+// apart, and the duplicate is hidden from screen readers — a rolling label
+// that is announced twice is a regression dressed as a flourish.
+export function ButtonContent({ icon, children }: ButtonContentProps) {
+  return (
+    <>
+      {isValidElement(icon) ? (
+        <span className="btn-roll" aria-hidden>
+          {icon}
+          {cloneElement(icon)}
+        </span>
+      ) : null}
+      <span className="btn-roll">
+        <span>{children}</span>
+        <span aria-hidden>{children}</span>
+      </span>
+    </>
+  );
+}
+
+// One entry point for both kinds of destination. In-page anchors go through the
+// router; anything leaving the site is a plain anchor — the release assets come
+// back as attachments, so there is nothing for the router to navigate to.
 export function ButtonLink({
   href,
   variant = "primary",
+  icon,
   className,
   children,
-}: {
+}: ButtonContentProps & {
   href: string;
   variant?: Variant;
   className?: string;
-  children: React.ReactNode;
 }) {
+  const classes = cn(buttonVariants[variant], className);
+  const content = <ButtonContent icon={icon}>{children}</ButtonContent>;
+
+  if (href.startsWith("#") || href.startsWith("/")) {
+    return (
+      <Link href={href} className={classes}>
+        {content}
+      </Link>
+    );
+  }
+
   return (
-    <Link href={href} className={cn(buttonVariants[variant], className)}>
-      {children}
-    </Link>
+    <a href={href} className={classes}>
+      {content}
+    </a>
   );
 }

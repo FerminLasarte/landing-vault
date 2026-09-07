@@ -10,18 +10,16 @@ import { site } from "@/lib/site";
 // buttons: the assets come back as attachments, so there is nothing to navigate
 // to and no reason to involve the client router in it.
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const className = "transition-colors hover:text-foreground";
-
   if (href.startsWith("#")) {
     return (
-      <Link href={href} className={className}>
+      <Link href={href} className="link">
         {children}
       </Link>
     );
   }
 
   return (
-    <a href={href} className={className}>
+    <a href={href} className="link">
       {children}
     </a>
   );
@@ -36,8 +34,8 @@ function Column({
 }) {
   return (
     <div>
-      <h2 className="text-sm font-medium text-foreground">{title}</h2>
-      <ul className="mt-4 flex flex-col gap-3 text-sm text-muted-foreground">
+      <h2 className="eyebrow">{title}</h2>
+      <ul className="mt-6 flex flex-col items-start gap-4 text-sm">
         {links.map((link) => (
           <li key={link.label}>
             <FooterLink href={link.href}>{link.label}</FooterLink>
@@ -59,15 +57,15 @@ export async function SiteFooter() {
     : RELEASES_PAGE;
 
   return (
-    <footer className="border-t border-border">
-      <Container className="py-16 sm:py-20">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-8">
+    <footer>
+      <Container className="py-20 sm:py-24">
+        <div className="grid gap-14 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
           <div className="max-w-xs">
-            <div className="flex items-center gap-2 text-base font-semibold tracking-tight">
+            <div className="flex items-center gap-2.5 text-base font-semibold tracking-tight">
               <Logo className="h-6 w-auto" />
               {site.name}
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground text-pretty">
+            <p className="mt-5 text-sm leading-relaxed text-muted-foreground text-pretty">
               {site.tagline}
             </p>
           </div>
@@ -102,12 +100,12 @@ export async function SiteFooter() {
           />
         </div>
 
-        <div className="mt-16 flex flex-col gap-3 border-t border-border pt-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-20 flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {site.name}
           </p>
-          <p>
-            {release.version ? `${release.version} · ` : ""}macOS y Windows
+          <p className="font-mono text-xs">
+            {release.version ? `${release.version} · ` : ""}macOS · Windows
           </p>
         </div>
       </Container>
