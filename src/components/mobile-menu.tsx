@@ -19,10 +19,10 @@ export function MobileMenu() {
   }
 
   return (
-    <details ref={menu} className="group md:hidden">
+    <details ref={menu} className="menu group md:hidden">
       <summary
         aria-label="Menú"
-        className="flex size-9 cursor-pointer list-none items-center justify-center rounded-[10px] text-fade transition-colors duration-150 hover:bg-paper hover:text-ink [&::-webkit-details-marker]:hidden"
+        className="press flex size-9 cursor-pointer list-none items-center justify-center rounded-[10px] text-fade hover:bg-paper hover:text-ink [&::-webkit-details-marker]:hidden"
       >
         <Menu className="size-5 group-open:hidden" aria-hidden />
         <X className="hidden size-5 group-open:block" aria-hidden />
@@ -30,7 +30,7 @@ export function MobileMenu() {
 
       <nav
         aria-label="Principal"
-        className="absolute inset-x-0 top-full bg-ground shadow-[0_1px_0_var(--rule)]"
+        className="menu-panel absolute inset-x-0 top-full bg-ground shadow-[0_1px_0_var(--rule)]"
       >
         <Container className="flex flex-col items-start gap-5 pb-8 pt-4">
           {nav.map((item) => (

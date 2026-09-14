@@ -71,9 +71,12 @@ function findShot(name: string) {
 
 // A window-shaped frame for captures of the desktop app.
 //
-// `important` raises the fetch priority but does not preload. A preload would
-// fetch both themes up front, two 2880px images for one that is shown; left
-// lazy, the variant hidden by `display: none` is never requested at all.
+// `important` is for the capture in the first viewport, which is the page's
+// LCP: it loads eagerly at high priority instead of waiting on lazy-loading.
+// That costs the hidden theme's copy too, since an eager image downloads even
+// under `display: none`, so it stays limited to that one capture. Every other
+// capture is lazy, and the variant hidden by `display: none` is never
+// requested at all.
 //
 // `zoomOnPhone` crops a phone-width frame to the top of the window at nearly
 // twice the scale: a whole 2880px window at 342px leaves the interface
@@ -129,6 +132,7 @@ export function AppShot({
     width: shot.width,
     height: shot.height,
     sizes,
+    loading: important ? ("eager" as const) : ("lazy" as const),
     fetchPriority: important ? ("high" as const) : undefined,
   };
 

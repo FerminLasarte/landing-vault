@@ -146,6 +146,18 @@
     color: var(--ink);
   }
 
+  /* Press feedback for the icon buttons, in the same language as `.btn`. */
+  .press {
+    transition:
+      transform 160ms var(--ease-out),
+      color 150ms ease,
+      background-color 150ms ease;
+  }
+
+  .press:active {
+    transform: scale(0.95);
+  }
+
   .link {
     text-decoration-line: underline;
     text-decoration-color: var(--rule);
@@ -279,6 +291,81 @@
   }
 }
 
+/* A receipt you do not keep fades. The cloud ticket prints in full ink like
+   Vault's and then loses it, driven by its own view timeline so every line
+   fades together, starting once the whole ticket is on screen and printed.
+   The final opacity is also the static state, and still holds 4.5:1 on both
+   papers. */
+@keyframes ink-fade {
+  from {
+    opacity: 1;
+  }
+}
+
+/* The stamp lands on the hero's accent value once the ticket has printed. */
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes menu-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.ink-fade {
+  view-timeline-name: --ticket;
+}
+
+.ink-fade :is(h3, dd) {
+  opacity: 0.72;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .ink-fade :is(h3, dd) {
+      animation: ink-fade linear both;
+      animation-timeline: --ticket;
+      animation-range: contain 0% contain 50%;
+    }
+  }
+
+  /* Starts after the print (250ms delay + 1.4s). With reduced motion the
+     print does not run either, so the value is simply there. */
+  [data-print="load"] .stamp {
+    animation: stamp 220ms var(--ease-out) 1650ms both;
+  }
+
+  /* Opening the phone menu drops the panel out of the header. Closing is
+     instant: the exit is always the faster half. */
+  .menu[open] > .menu-panel {
+    animation: menu-in 200ms var(--ease-out);
+  }
+
+  /* A theme change crossfades instead of snapping every surface at once. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 200ms;
+    animation-timing-function: ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu[open] > .menu-panel {
+    animation: menu-fade-in 150ms ease;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -330,14 +417,17 @@ html:not(.os-mac):not(.os-win) [data-os="other"] {
 }
 
 /* The questions unfold instead of snapping open, where the browser can
-   interpolate to `auto`. Elsewhere <details> opens as it always has. */
+   interpolate to `auto`. Elsewhere <details> opens as it always has. The phone
+   menu is left out: its panel is absolutely positioned, so the height has
+   nothing to animate, and the discrete delay would keep it on screen for
+   300ms after closing. */
 @supports (interpolate-size: allow-keywords) {
   @media (prefers-reduced-motion: no-preference) {
     :root {
       interpolate-size: allow-keywords;
     }
 
-    details::details-content {
+    details:not(.menu)::details-content {
       block-size: 0;
       overflow: hidden;
       transition:
@@ -345,7 +435,7 @@ html:not(.os-mac):not(.os-win) [data-os="other"] {
         content-visibility 300ms allow-discrete;
     }
 
-    details[open]::details-content {
+    details[open]:not(.menu)::details-content {
       block-size: auto;
     }
   }

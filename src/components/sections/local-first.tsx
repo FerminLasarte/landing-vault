@@ -28,13 +28,14 @@ const COMPARISON = [
 
 type Side = "vault" | "cloud";
 
-// The same six lines on two tickets. The cloud one is printed in faded ink,
-// which is what happens to a receipt you do not keep.
+// The same six lines on two tickets. The cloud one prints in full ink and then
+// fades (`.ink-fade` in globals.css), which is what happens to a receipt you
+// do not keep.
 function Ticket({ side, title, subtitle }: { side: Side; title: string; subtitle: string }) {
   const kept = side === "vault";
 
   return (
-    <Receipt className={cn(!kept && "md:mt-20")} paperClassName={cn(!kept && "text-fade")}>
+    <Receipt className={cn(!kept && "md:mt-20")} paperClassName={cn(!kept && "ink-fade")}>
       <h3 className="font-sans font-wide text-sm font-semibold uppercase">{title}</h3>
       <p className="text-fade">{subtitle}</p>
       <dl>

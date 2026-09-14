@@ -48,7 +48,8 @@ export function Leaders({
       {rows.map((row) => (
         <div key={row.label}>
           <dt>{row.label}</dt>
-          <dd className={row.accent ? "text-accent" : undefined}>{row.value}</dd>
+          {/* `stamp` only animates inside a receipt that prints on load. */}
+          <dd className={row.accent ? "stamp text-accent" : undefined}>{row.value}</dd>
         </div>
       ))}
     </dl>
