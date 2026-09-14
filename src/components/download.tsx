@@ -1,113 +1,125 @@
 import Link from "next/link";
 import { ArrowDownToLine } from "lucide-react";
 
-import { ButtonContent, buttonVariants } from "@/components/ui/button";
+import { buttonVariants, type ButtonVariant } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  assetHref,
-  getLatestRelease,
-  type Asset,
-  type Release,
-} from "@/lib/release";
+import { assetHref, getLatestRelease, type Asset } from "@/lib/release";
 
 // The first-run warning is not fine print. The app ships unsigned, so the very
-// first launch is a dialog that says, in as many words, that the file may be
-// malware. Explaining it next to the button — before the download, not after —
-// is the difference between two extra clicks and an app that "does not open".
-const BLOCKED = {
-  mac: "La app no está firmada con un certificado de Apple, así que la primera vez macOS la bloquea: entrá a Ajustes del Sistema → Privacidad y seguridad y elegí «Abrir igualmente».",
-  windows:
-    "La app no está firmada con un certificado de Microsoft, así que la primera vez Windows la bloquea: hacé clic en «Más información» → «Ejecutar de todas formas».",
-  both: "La app no está firmada, así que la primera vez el sistema la bloquea. En macOS: Ajustes del Sistema → Privacidad y seguridad → «Abrir igualmente». En Windows: «Más información» → «Ejecutar de todas formas».",
+// first launch is a dialog that says the file may be malware. Explaining it
+// next to the button, before the download, is the difference between two extra
+// clicks and an app that "does not open".
+const UNSIGNED = {
+  mac: "No está firmada con un certificado de Apple. Para abrirla:",
+  windows: "No está firmada con un certificado de Microsoft. Para abrirla:",
+  both: "No está firmada con certificados de Apple ni de Microsoft. Para abrirla:",
 } as const;
 
-const UPDATES = "Se hace una sola vez: de ahí en adelante se actualiza sola.";
+const STEPS = {
+  mac: ["Entrá a Ajustes del Sistema → Privacidad y seguridad.", "Elegí «Abrir igualmente»."],
+  windows: ["Hacé clic en «Más información».", "Elegí «Ejecutar de todas formas»."],
+} as const;
 
-// La versión corta, para el hero. El aviso completo son tres renglones de gris
-// justo debajo del botón principal, que es exactamente donde menos conviene un
-// bloque de texto denso: pesa más que la propia llamada a la acción. Acá va la
-// consecuencia en una línea y el procedimiento queda a un clic, en la sección
-// de preguntas, donde ya estaba escrito.
-type Size = "md" | "lg";
-
+// The hero gets the consequence in one line and the procedure one click away,
+// in the questions, so the warning never outweighs the button.
 const BLOCKED_SHORT = {
   mac: "La primera vez, macOS pide autorizarla a mano.",
   windows: "La primera vez, Windows pide confirmarla a mano.",
   both: "La primera vez, el sistema pide autorizarla a mano.",
 } as const;
 
+const FIRST_TIME = {
+  mac: "La primera vez, macOS la va a bloquear.",
+  windows: "La primera vez, Windows la va a bloquear.",
+  both: "La primera vez, el sistema la va a bloquear.",
+} as const;
+
+const UPDATES = "Se hace una sola vez: después se actualiza sola.";
+
+type Platform = keyof typeof UNSIGNED;
+
+function Steps({ steps }: { steps: readonly string[] }) {
+  return (
+    <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-relaxed text-fade">
+      {steps.map((step) => (
+        <li key={step}>{step}</li>
+      ))}
+    </ol>
+  );
+}
+
 // A plain anchor, deliberately, and two things that must not be added to it:
 //
 //   - No `target="_blank"`. GitHub serves the assets as
 //     `content-disposition: attachment`, so the browser downloads without
-//     navigating anywhere — the new tab would open empty and close itself,
-//     which looks like a glitch.
+//     navigating; a new tab would open empty and close itself.
 //   - No fetching the file from JavaScript. The API is used to learn the URL,
 //     nothing else. Pulling 13 MB through script means fighting CORS and
-//     throwing away the browser's own download progress.
-
+//     losing the browser's own download progress.
 function DownloadButton({
   asset,
   variant = "primary",
-  size = "md",
   children,
 }: {
   asset: Asset | null;
-  variant?: keyof typeof buttonVariants;
-  size?: Size;
+  variant?: ButtonVariant;
   children: React.ReactNode;
 }) {
   return (
-    <a
-      href={assetHref(asset)}
-      className={cn(buttonVariants[variant], size === "lg" && "btn-lg")}
-    >
-      <ButtonContent icon={<ArrowDownToLine className="size-4" />}>
-        {children}
-      </ButtonContent>
+    <a href={assetHref(asset)} className={buttonVariants[variant]}>
+      <ArrowDownToLine className="size-4" aria-hidden />
+      {children}
     </a>
   );
 }
 
-// Version and weight, next to the button. Both are omitted rather than faked
-// when the feed could not be read.
+// Version and weight, next to the button. Omitted rather than faked when the
+// feed could not be read.
 function Meta({ version, asset }: { version: string | null; asset?: Asset | null }) {
   const parts = [version, asset?.size].filter(Boolean);
   if (parts.length === 0) return null;
 
-  return (
-    <p className="text-sm tabular-nums text-muted-foreground">{parts.join(" · ")}</p>
-  );
+  return <p className="font-mono text-xs text-fade tabular-nums">{parts.join(" · ")}</p>;
 }
 
 function AltLink({ asset, children }: { asset: Asset | null; children: React.ReactNode }) {
   return (
-    <a
-      href={assetHref(asset)}
-      className="link"
-    >
+    <a href={assetHref(asset)} className="link">
       {children}
     </a>
   );
 }
 
-function Note({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground text-pretty">
-      {children}
-    </p>
-  );
-}
+function Warning({ platform, detail }: { platform: Platform; detail: "brief" | "full" }) {
+  if (detail === "brief") {
+    return (
+      <p className="mt-5 text-sm text-fade">
+        {BLOCKED_SHORT[platform]}{" "}
+        <Link href="#preguntas" className="link">
+          Cómo se hace
+        </Link>
+      </p>
+    );
+  }
 
-// El aviso breve, con el procedimiento a un clic en vez de transcripto.
-function ShortNote({ children }: { children: React.ReactNode }) {
+  // The warning as a state of its own: a framed notice with the consequence in
+  // plain words first, then the steps, not a label over grey fine print.
   return (
-    <p className="mt-6 text-sm text-muted-foreground">
-      {children}{" "}
-      <Link href="#preguntas" className="link">
-        Cómo se hace
-      </Link>
-    </p>
+    <div className="mt-8 max-w-lg rounded-[10px] border border-ink p-5">
+      <p className="font-semibold">{FIRST_TIME[platform]}</p>
+      <p className="mt-1 text-sm text-fade">{UNSIGNED[platform]}</p>
+      {platform === "both" ? (
+        <>
+          <p className="mt-3 text-sm font-medium">En macOS</p>
+          <Steps steps={STEPS.mac} />
+          <p className="mt-3 text-sm font-medium">En Windows</p>
+          <Steps steps={STEPS.windows} />
+        </>
+      ) : (
+        <Steps steps={STEPS[platform]} />
+      )}
+      <p className="mt-3 text-sm text-fade">{UPDATES}</p>
+    </div>
   );
 }
 
@@ -116,94 +128,64 @@ function Row({ children }: { children: React.ReactNode }) {
 }
 
 function Alternatives({ children }: { children: React.ReactNode }) {
-  return <p className="mt-5 text-sm text-muted-foreground">{children}</p>;
+  return <p className="mt-4 text-sm text-fade">{children}</p>;
 }
 
-// Which of the three blocks a visitor sees is decided by the class the layout's
-// boot script puts on <html>, and applied by CSS in globals.css — not by an
-// effect. That way the right button is on screen in the first paint instead of
-// swapping under the cursor after hydration, and a visitor with JavaScript off
+// Which of the three blocks a visitor sees is decided by the class the boot
+// script puts on <html>, applied by CSS in globals.css, not by an effect: the
+// right button is there in the first paint, and a visitor with JavaScript off
 // still gets the neutral block with both platforms.
 export async function DownloadBlock({
   className,
-  revealStyle,
   detail = "full",
-  size = "md",
 }: {
   className?: string;
-  revealStyle?: React.CSSProperties;
-  size?: Size;
-  // "brief" en el hero, donde el aviso compite con el botón; "full" en la
-  // sección de cierre, que tiene sitio para explicarlo entero.
+  // "brief" in the hero, where the warning competes with the button; "full"
+  // in the closing section, which has room to explain it.
   detail?: "brief" | "full";
 }) {
-  const release: Release = await getLatestRelease();
+  const release = await getLatestRelease();
 
   return (
-    <div
-      data-reveal={revealStyle ? "" : undefined}
-      style={revealStyle}
-      className={className}
-    >
+    <div className={cn(className)}>
       <div data-os="mac">
         <Row>
-          <DownloadButton asset={release.mac} size={size}>Descargar para macOS</DownloadButton>
+          <DownloadButton asset={release.mac}>Descargar para macOS</DownloadButton>
           <Meta version={release.version} asset={release.mac} />
         </Row>
         <Alternatives>
-          ¿Estás en Windows?{" "}
-          <AltLink asset={release.windows}>Bajar el instalador</AltLink> ·{" "}
-          <AltLink asset={release.windowsMsi}>.msi</AltLink>
+          ¿Estás en Windows? <AltLink asset={release.windows}>Bajá el instalador</AltLink> o
+          el <AltLink asset={release.windowsMsi}>.msi</AltLink>
         </Alternatives>
-        {detail === "brief" ? (
-          <ShortNote>{BLOCKED_SHORT.mac}</ShortNote>
-        ) : (
-          <Note>
-            {BLOCKED.mac} {UPDATES}
-          </Note>
-        )}
+        <Warning platform="mac" detail={detail} />
       </div>
 
       <div data-os="win">
         <Row>
-          <DownloadButton asset={release.windows} size={size}>Descargar para Windows</DownloadButton>
+          <DownloadButton asset={release.windows}>Descargar para Windows</DownloadButton>
           <Meta version={release.version} asset={release.windows} />
         </Row>
         <Alternatives>
-          También como <AltLink asset={release.windowsMsi}>.msi</AltLink> · ¿Estás en
-          macOS? <AltLink asset={release.mac}>Bajar el .dmg</AltLink>
+          También como <AltLink asset={release.windowsMsi}>.msi</AltLink>. ¿Estás en macOS?{" "}
+          <AltLink asset={release.mac}>Bajá el .dmg</AltLink>
         </Alternatives>
-        {detail === "brief" ? (
-          <ShortNote>{BLOCKED_SHORT.windows}</ShortNote>
-        ) : (
-          <Note>
-            {BLOCKED.windows} {UPDATES}
-          </Note>
-        )}
+        <Warning platform="windows" detail={detail} />
       </div>
 
       {/* Linux, phones, and anyone with JavaScript off. The release only
-          builds macOS and Windows, so both are offered as equals rather than
-          guessing one for a platform that has neither. */}
+          builds macOS and Windows, so both are offered as equals. */}
       <div data-os="other">
         <Row>
-          <DownloadButton asset={release.mac} size={size}>Descargar para macOS</DownloadButton>
-          <DownloadButton asset={release.windows} variant="secondary" size={size}>
+          <DownloadButton asset={release.mac}>Descargar para macOS</DownloadButton>
+          <DownloadButton asset={release.windows} variant="secondary">
             Descargar para Windows
           </DownloadButton>
-          <Meta version={release.version} />
         </Row>
         <Alternatives>
           El instalador de Windows también está como{" "}
           <AltLink asset={release.windowsMsi}>.msi</AltLink>
         </Alternatives>
-        {detail === "brief" ? (
-          <ShortNote>{BLOCKED_SHORT.both}</ShortNote>
-        ) : (
-          <Note>
-            {BLOCKED.both} {UPDATES}
-          </Note>
-        )}
+        <Warning platform="both" detail={detail} />
       </div>
     </div>
   );

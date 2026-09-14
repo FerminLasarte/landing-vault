@@ -1,576 +1,323 @@
 @import "tailwindcss";
 
-/* Dark mode is driven by a class on <html> so the site can offer a toggle.
-   The class is set before paint by the inline script in the root layout, which
-   also reads the system preference — so there is no media query here on
-   purpose: one source of truth avoids the two disagreeing. */
+/* Dark mode is a class on <html>, set before first paint by the boot script in
+   the root layout, which also reads the system preference. One source of truth,
+   so the toggle and the preference can never disagree. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  /* `ui-rounded` es el nombre genérico que en las plataformas de Apple resuelve
-     a SF Pro Rounded, la fuente instalada — no hay descarga ni licencia web de
-     por medio. Nunito cubre al resto con la misma silueta redondeada, y los
-     últimos nombres son el piso para cuando tampoco esté. */
-  --font-sans:
-    ui-rounded, "SF Pro Rounded", var(--font-rounded), "Segoe UI Variable",
-    system-ui, sans-serif;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, "SF Mono", Menlo, monospace;
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-surface: var(--surface);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
+  --color-ground: var(--ground);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-fade: var(--fade);
+  --color-rule: var(--rule);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
 
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
-  /* One easing curve for the whole site. Everything decelerates the same way,
-     which is what makes unrelated elements read as one system rather than as
-     a pile of separate effects. */
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Fluid sizes: they interpolate with the viewport instead of jumping at
+     breakpoints. */
+  --text-display: clamp(2.5rem, 1.1rem + 4.2vw, 4.75rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.03em;
 
-  /* The one looping animation on the site: the arrow that says the page
-     continues below the fold. */
-  --animate-bob: bob 2.6s var(--ease-out-quint) infinite;
+  --text-title: clamp(1.875rem, 1.25rem + 2vw, 3rem);
+  --text-title--line-height: 1.08;
+  --text-title--letter-spacing: -0.025em;
 
-  /* Fluid type. The sizes interpolate with the viewport instead of jumping at
-     breakpoints, so the headline is the same proportion of the screen on a
-     phone and on a 27". Tracking tightens as the size grows — large text set
-     at body tracking always looks loose. */
-  --text-display: clamp(2.625rem, 0.9rem + 6.6vw, 6.5rem);
-  --text-display--line-height: 0.95;
-  --text-display--letter-spacing: -0.045em;
+  --text-statement: clamp(1.375rem, 1.15rem + 0.8vw, 1.75rem);
+  --text-statement--line-height: 1.2;
+  --text-statement--letter-spacing: -0.015em;
 
-  --text-title: clamp(1.875rem, 1.15rem + 2.6vw, 3.25rem);
-  --text-title--line-height: 1.05;
-  --text-title--letter-spacing: -0.035em;
-
-  --text-subtitle: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
-  --text-subtitle--line-height: 1.2;
-  --text-subtitle--letter-spacing: -0.02em;
-
-  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
-  --text-lead--line-height: 1.6;
-  --text-lead--letter-spacing: -0.01em;
+  --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-lead--line-height: 1.55;
 }
 
-/* Mirrors the token set of the desktop app (src/index.css there): pure
-   neutrals in OKLCH, with red for errors as the only chromatic value.
-   `--surface` is the one addition — a barely-there raised tone that lets one
-   section sit on top of another without a rule between them. */
+/* Thermal paper on a cool grey desk. `fade` is the ink a receipt loses with
+   time, kept above 4.5:1 on both grounds. The accent is the pink stripe at the
+   end of a roll, and it is spent once per screen. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --surface: oklch(0.981 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
+  --ground: #eeefec;
+  --paper: #fbfbfa;
+  --ink: #1e1f22;
+  --fade: #62646a;
+  --rule: #d5d7d3;
+  --accent: #c92a62;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --surface: oklch(0.178 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ground: #111213;
+  --paper: #1b1c1e;
+  --ink: #ecedea;
+  --fade: #9b9da2;
+  --rule: #2e3033;
+  --accent: #f0689a;
+}
+
+/* In the dark the desk goes dark and the paper dims, but it stays paper: dark
+   ink on a grey sheet. Inverted, a receipt is one more dark card. Every pair
+   here holds 4.5:1 on the dimmed sheet. */
+.dark .receipt,
+.dark .stub {
+  --paper: #c9cac6;
+  --ink: #1e1f22;
+  --fade: #4a4c51;
+  --rule: #a3a5a1;
+  --accent: #9e1d4b;
+}
+
+/* Receipt headers print at double width; Archivo's width axis does the same. */
+@utility font-wide {
+  font-stretch: 118%;
 }
 
 @layer base {
   * {
-    border-color: var(--border);
+    border-color: var(--rule);
+  }
+
+  html {
+    scrollbar-color: var(--rule) var(--ground);
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: var(--ground);
+    color: var(--ink);
     font-family: var(--font-sans);
-    /* The page is a single column of full-width bands; a stray wide child
-       should clip rather than let the whole document scroll sideways. */
     overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--ink);
+    color: var(--paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
   }
 
   /* Anchor links land below the sticky header instead of under it. */
   :target {
-    scroll-margin-top: 7rem;
-  }
-
-  ::selection {
-    background-color: var(--foreground);
-    color: var(--background);
+    scroll-margin-top: 6rem;
   }
 }
 
-/* ------------------------------------------------------------------ layout
+/* ------------------------------------------------------------------ controls
 
-   Sections are separated by rhythm and tone, never by a rule. The tonal step
-   between `base` and `raised` is under 2% of luminance — enough for the eye to
-   register a new surface, too little to read as a hard edge. `invert` is the
-   exception and the punctuation: one panel, at the end, that flips the whole
-   token set so every child inside it inverts without knowing it did. */
-
-@layer components {
-  .section {
-    padding-block: clamp(5.5rem, 11vw, 10rem);
-    /* Tone changes are announced rather than snapped, which matters when the
-       theme toggle flips every surface at once. */
-    transition: background-color 400ms ease;
-  }
-
-  .section[data-tone="raised"] {
-    background-color: var(--surface);
-  }
-
-  .section[data-tone="invert"] {
-    background-color: var(--background);
-    color: var(--foreground);
-  }
-
-  /* Redefining the tokens — rather than restyling the children — is what lets
-     the download block, the buttons and the muted copy drop into the closing
-     panel unchanged. */
-  [data-tone="invert"] {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --surface: oklch(0.205 0 0);
-    --primary: oklch(0.985 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --accent: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --border: oklch(1 0 0 / 14%);
-    --ring: oklch(0.708 0 0);
-  }
-
-  /* In dark mode the panel lifts instead of flipping: a white block on a dark
-     page is a flashbulb, not emphasis. */
-  .dark [data-tone="invert"] {
-    --background: oklch(0.205 0 0);
-    --surface: oklch(0.269 0 0);
-  }
-
-  /* Versalitas con mucho interletrado y un puntito delante es el sello de la
-     plantilla genérica: aparece en cada landing generada del último año. Acá la
-     etiqueta va en caja normal, al tamaño del texto menor, y lo que la ordena
-     es el número que la precede: convierte cuatro rótulos sueltos en el índice
-     del recorrido. */
-  .eyebrow {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: -0.005em;
-    color: var(--muted-foreground);
-  }
-
-  /* Cifras de ancho fijo, para que el índice no baile entre secciones. */
-  .eyebrow-index {
-    color: var(--foreground);
-    font-variant-numeric: tabular-nums;
-  }
-}
-
-/* ------------------------------------------------------------------ botones
-
-   Un botón con carácter, no una caja que cambia de opacidad. Tres gestos que
-   ocurren juntos: el relleno sube desde abajo, la etiqueta rota hacia arriba
-   mostrando su copia, y el ícono sale por abajo y vuelve a entrar por arriba.
-   Todo con la misma curva del resto del sitio, así que se lee como un gesto
-   del sistema y no como un efecto pegado encima. */
+   Paper is square, controls are 10px, captures are 12px. */
 
 @layer components {
   .btn {
-    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.625rem;
-    isolation: isolate;
-    overflow: hidden;
-    border-radius: var(--radius-lg);
-    padding: 0.8125rem 1.375rem;
+    border-radius: 10px;
+    padding: 0.8125rem 1.25rem;
     font-size: 0.9375rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
+    font-weight: 600;
     white-space: nowrap;
     transition:
-      transform 500ms var(--ease-out-expo),
-      color 350ms var(--ease-out-expo),
-      border-color 350ms var(--ease-out-expo);
-  }
-
-  /* El relleno de hover es una capa sólida que escala: sin degradados, sin
-     sombras, y compuesta en GPU en vez de repintar el fondo. */
-  .btn::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    transform: scaleY(0);
-    transform-origin: 50% 100%;
-    transition: transform 550ms var(--ease-out-expo);
-  }
-
-  .btn:hover::before,
-  .btn:focus-visible::before {
-    transform: scaleY(1);
+      transform 160ms var(--ease-out),
+      background-color 150ms ease,
+      box-shadow 150ms ease;
   }
 
   .btn:active {
-    transform: scale(0.975);
+    transform: scale(0.97);
   }
 
-  .btn:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 3px;
-  }
-
-  .btn-lg {
-    padding: 1rem 1.75rem;
-    font-size: 1rem;
-    border-radius: var(--radius-xl);
-    gap: 0.75rem;
+  .btn-sm {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
   }
 
   .btn-primary {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
-  }
-
-  .btn-primary::before {
-    background-color: var(--foreground);
+    background-color: var(--ink);
+    color: var(--paper);
   }
 
   .btn-secondary {
-    border: 1px solid var(--border);
-    background-color: transparent;
-    color: var(--foreground);
+    box-shadow: inset 0 0 0 1px var(--rule);
+    color: var(--ink);
   }
 
-  .btn-secondary::before {
-    background-color: var(--secondary);
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--muted-foreground);
-  }
-
-  /* Etiqueta e ícono comparten la misma mecánica: dos copias apiladas en una
-     única celda de grilla, recortadas por el contenedor, que se desplazan una
-     altura completa. La segunda copia va con aria-hidden desde el componente,
-     así que un lector de pantalla escucha el texto una sola vez. */
-  .btn-roll {
-    display: grid;
-    overflow: hidden;
-  }
-
-  .btn-roll > * {
-    grid-area: 1 / 1;
-    transition: transform 550ms var(--ease-out-expo);
-  }
-
-  .btn-roll > *:last-child {
-    transform: translateY(105%);
-  }
-
-  .btn:hover .btn-roll > *:first-child,
-  .btn:focus-visible .btn-roll > *:first-child {
-    transform: translateY(-105%);
-  }
-
-  .btn:hover .btn-roll > *:last-child,
-  .btn:focus-visible .btn-roll > *:last-child {
-    transform: translateY(0);
-  }
-
-  /* Enlace de texto: la subrayada crece desde la izquierda en vez de
-     aparecer. Mismo criterio que el botón, a menor escala. */
   .link {
-    position: relative;
-    color: var(--muted-foreground);
-    transition: color 300ms var(--ease-out-expo);
+    text-decoration-line: underline;
+    text-decoration-color: var(--rule);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color 150ms ease;
   }
 
-  .link::after {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: -2px;
-    block-size: 1px;
-    background-color: currentColor;
-    transform: scaleX(0);
-    transform-origin: 0 50%;
-    transition: transform 450ms var(--ease-out-expo);
-  }
+  /* Hover only where there is a real pointer: on touch it fires on tap and
+     sticks. */
+  @media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+      background-color: color-mix(in oklab, var(--ink) 84%, var(--paper));
+    }
 
-  .link:hover {
-    color: var(--foreground);
-  }
+    .btn-secondary:hover {
+      background-color: var(--paper);
+    }
 
-  .link:hover::after {
-    transform: scaleX(1);
+    .link:hover {
+      text-decoration-color: currentColor;
+    }
   }
 }
 
-/* ---------------------------------------------------------------- movimiento
+/* ------------------------------------------------------------------ receipts
 
-   Un solo gesto de entrada para todo el sitio: el elemento sube 14px con un
-   fundido y desacelera. La variedad la dan el retardo y la distancia, no
-   curvas distintas por sección.
+   The paper object. The serrated bottom edge is a mask: a conic gradient per
+   14px tile keeps an upward wedge and drops the two corners, which leaves a
+   row of teeth. The shadow lives on a wrapper because a mask would clip a
+   shadow drawn on the same element. */
 
-   Las reglas cuelgan de `.js`, que el script del layout pone antes del primer
-   pintado. Sin JavaScript la clase nunca aparece, los elementos quedan
-   visibles, y la página funciona igual — que es lo mínimo que se le puede
-   pedir a una animación de entrada. */
+@layer components {
+  .receipt-shadow {
+    filter: drop-shadow(0 1px 1px rgb(30 31 34 / 0.06))
+      drop-shadow(0 14px 28px rgb(30 31 34 / 0.08));
+  }
+
+  .dark .receipt-shadow {
+    filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.6))
+      drop-shadow(0 18px 36px rgb(0 0 0 / 0.55));
+  }
+
+  .receipt,
+  .stub {
+    --logo-cut: var(--paper);
+  }
+
+  /* The closing stub is torn along its top edge instead: the same teeth,
+     turned over. */
+  /* `color` is set again, not inherited: the body's colour is computed from
+     the page's ink, and would stay light on the dimmed dark-mode sheet. */
+  .stub {
+    color: var(--ink);
+    mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg)
+      50% / 14px 100%;
+  }
+
+  .receipt {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-stretch: 87.5%;
+    font-size: 0.75rem;
+    line-height: 1.75;
+    padding: 1.5rem 1.25rem 2.25rem;
+    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg)
+      50% / 14px 100%;
+  }
+
+  @media (width >= 40rem) {
+    .receipt {
+      font-size: 0.8125rem;
+      padding: 1.75rem 1.75rem 2.5rem;
+    }
+  }
+
+  .receipt hr {
+    margin-block: 0.875rem;
+    border: 0;
+    border-top: 1px dashed color-mix(in oklab, var(--ink) 35%, transparent);
+  }
+
+  /* Item, dotted leader, value: the receipt line. */
+  .leaders > div {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .leaders dt {
+    display: flex;
+    flex: 1;
+    align-items: baseline;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .leaders dt::after {
+    content: "";
+    flex: 1;
+    min-width: 1.25rem;
+    border-bottom: 1px dotted color-mix(in oklab, var(--ink) 45%, transparent);
+  }
+
+  .leaders dd {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ------------------------------------------------------------------- motion
+
+   One gesture for the whole page: paper feeds out of the printer, a line at a
+   time. The hero receipt prints on load; the others print as they scroll into
+   view, on the compositor, with no script. Everything starts from its final
+   state, so without support or with reduced motion nothing is ever hidden. */
+
+@keyframes print {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes header-settle {
+  from {
+    box-shadow: 0 1px 0 transparent;
+  }
+}
 
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
   }
 
-  .js [data-reveal] {
-    opacity: 0;
-    transform: translateY(14px);
-    transition:
-      opacity 750ms var(--ease-out-expo),
-      transform 750ms var(--ease-out-expo);
-    transition-delay: var(--reveal-delay, 0ms);
+  [data-print="load"] {
+    animation: print 1.4s steps(22, end) 250ms both;
   }
 
-  /* Las filas de tabla se limitan al fundido: el soporte de `transform` sobre
-     `display: table-row` es despareja entre motores, y una fila que se desplaza
-     mientras las de al lado no lo hacen se ve como un error de maquetado. */
-  .js [data-reveal="row"] {
-    transform: none;
-  }
-
-  /* Titulares por línea: el contenedor recorta y la línea sube desde abajo,
-     que es el gesto editorial que da el peso del hero. La animación necesita
-     dos elementos anidados — de ahí la variante propia. Lo estructural (que
-     cada línea sea una línea) vive fuera de esta media query: con
-     `prefers-reduced-motion` las líneas se quedaban en la misma renglón. */
-  .js [data-reveal="line"] {
-    overflow: hidden;
-    opacity: 1;
-    transform: none;
-    /* El recorte corta las colas de las letras; el padding devuelve el
-       espacio y el margen negativo lo saca del flujo. */
-    padding-block-end: 0.12em;
-    margin-block-end: -0.12em;
-  }
-
-  .js [data-reveal="line"] > * {
-    transform: translateY(110%);
-    transition: transform 1000ms var(--ease-out-expo);
-    transition-delay: var(--reveal-delay, 0ms);
-  }
-
-  .js [data-reveal="line"].is-visible > * {
-    transform: translateY(0);
-  }
-
-  .js [data-reveal].is-visible {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* --------------------------------------------------------- scroll vinculado
-
-   La captura no entra: crece. `--p` va de 0 a 1 mientras el elemento cruza la
-   pantalla, y el transform se calcula a partir de ahí — un único punto de
-   control para escala, elevación e inclinación.
-
-   El valor lo maneja `animation-timeline: view()`, que corre en el compositor
-   y por lo tanto no puede trabarse con el hilo principal ocupado. Donde no
-   existe, el runtime de movimiento escribe `--p` a mano en cada cuadro; y si
-   tampoco hay JavaScript, el valor inicial de 1 deja la captura en su estado
-   final. Nunca se ve a medio camino. */
-
-[data-reveal="line"],
-[data-reveal="line"] > * {
-  display: block;
-}
-
-@property --p {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 1;
-}
-
-/* Sin `will-change: transform` a propósito. Promovería a capa propia, de forma
-   permanente, cinco capturas de 2880px de ancho — que a densidad doble son
-   varios cientos de MB de textura retenidos durante toda la vida de la página,
-   a cambio de nada: el navegador promueve la capa igual mientras la animación
-   corre, que es el único momento en que hace falta. */
-[data-rise] {
-  transform: perspective(1400px) rotateX(calc((1 - var(--p)) * 2.2deg))
-    scale(calc(0.93 + 0.07 * var(--p)));
-  transform-origin: 50% 100%;
-}
-
-@keyframes bob {
-  0%,
-  55%,
-  100% {
-    transform: translateY(0);
-  }
-  25% {
-    transform: translateY(3px);
-  }
-}
-
-@keyframes rise {
-  from {
-    --p: 0;
-  }
-  to {
-    --p: 1;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    [data-rise] {
-      animation: rise linear both;
+    [data-print="scroll"] {
+      animation: print steps(14, end) both;
       animation-timeline: view();
-      animation-range: entry 5% cover 42%;
+      /* Finished by the time the whole receipt is on screen. A later end
+         would freeze a sticky receipt half-printed: once it sticks, it stops
+         moving against the viewport and the timeline stops with it. */
+      animation-range: entry 0% entry 100%;
     }
-  }
-}
 
-/* ----------------------------------------------------------------- el hero
-
-   Tres gestos que sólo existen acá arriba, porque son los que tienen que
-   convencer a alguien de seguir bajando.
-
-   El primero es la paralaje: el texto sube un poco más rápido que la página y
-   se apaga mientras sale, así que el pliegue tiene profundidad en cuanto tocás
-   la rueda. Va sobre `scroll()` en vez de `view()` porque el elemento arranca
-   ya visible y lo que interesa medir es el recorrido del documento, no el del
-   elemento contra la ventana. */
-
-@keyframes hero-lift {
-  to {
-    transform: translateY(-3rem);
-    opacity: 0.3;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    [data-hero-lift] {
-      animation: hero-lift linear both;
+    /* The header rule appears once something scrolls under it. */
+    .site-header {
+      animation: header-settle linear both;
       animation-timeline: scroll(root block);
-      animation-range: 0 85vh;
+      animation-range: 0 4rem;
     }
   }
 }
 
-/* El segundo es la inclinación: la captura sigue al puntero un grado y medio,
-   apenas lo suficiente para que se lea como un objeto con volumen en vez de una
-   imagen pegada. Los valores los escribe el runtime de movimiento; sin puntero
-   —un teléfono— se quedan en cero y no pasa nada. La perspectiva vive en el
-   padre porque un elemento no puede darse profundidad a sí mismo, y el
-   `data-rise` de adentro conserva su propia transformación sin pisarse con
-   ésta. */
-.tilt-stage {
-  perspective: 1800px;
+.site-header {
+  background-color: var(--ground);
+  box-shadow: 0 1px 0 var(--rule);
 }
 
-.tilt-stage > [data-tilt] {
-  transform: rotateX(calc(var(--ty, 0) * -1.3deg))
-    rotateY(calc(var(--tx, 0) * 1.8deg));
-  transform-style: preserve-3d;
-  transition: transform 600ms var(--ease-out-expo);
-}
+/* ----------------------------------------------------------------- download
 
-/* El tercero es el indicador de scroll: una línea corta con un segmento que la
-   recorre hacia abajo, en bucle. Es la única animación de la página que no
-   espera a nada — está para decir que hay más. */
-.cue-track {
-  position: relative;
-  display: block;
-  inline-size: 1px;
-  block-size: 2.75rem;
-  overflow: hidden;
-  background-color: var(--border);
-}
-
-.cue-track::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  block-size: 45%;
-  background-color: var(--foreground);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .cue-track::after {
-    animation: cue-travel 2.4s var(--ease-out-quint) infinite;
-  }
-}
-
-@keyframes cue-travel {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(222%);
-  }
-}
-
-/* ------------------------------------------------------------------ descarga
-
-   Cuál de los tres bloques de descarga se ve lo decide la clase que el script
-   del layout le pone a <html> antes del primer pintado, no un efecto de React:
-   el botón de la plataforma correcta ya está en el primer cuadro, en vez de
-   cambiar debajo del cursor cuando hidrata.
-
-   Sin JavaScript no hay clase, y queda el bloque neutro con las dos
-   plataformas — que es también lo que ve alguien en Linux, para el que la
-   release no compila nada. */
+   Which download block shows is decided by the class the boot script puts on
+   <html> before first paint, so the right button is there in the first frame.
+   Without JavaScript there is no class and the neutral block with both
+   platforms shows, which is also what Linux gets. */
 
 [data-os] {
   display: none;
@@ -582,36 +329,8 @@ html:not(.os-mac):not(.os-win) [data-os="other"] {
   display: block;
 }
 
-/* La cabecera arranca fundida con el hero y sólo se separa del contenido
-   cuando hay algo scrolleado debajo. Fondo sólido, no translúcido: el brief
-   descarta el vidrio esmerilado. Además se comprime, que es la señal de que
-   pasó a segundo plano. */
-.site-header {
-  background-color: transparent;
-  transition:
-    background-color 400ms var(--ease-out-expo),
-    box-shadow 400ms var(--ease-out-expo);
-}
-
-.site-header-inner {
-  height: 5rem;
-  transition: height 400ms var(--ease-out-expo);
-}
-
-[data-scrolled="true"] .site-header {
-  background-color: var(--background);
-  /* Una sombra de 1px es la hairline: no hay borde que animar y no aparece un
-     rectángulo antes de tiempo. */
-  box-shadow: 0 1px 0 0 var(--border);
-}
-
-[data-scrolled="true"] .site-header-inner {
-  height: 4rem;
-}
-
-/* El acordeón de preguntas se despliega en vez de saltar. `interpolate-size` y
-   `::details-content` todavía no están en todos lados, así que va detrás de
-   @supports: donde no existe, el <details> abre de golpe como siempre. */
+/* The questions unfold instead of snapping open, where the browser can
+   interpolate to `auto`. Elsewhere <details> opens as it always has. */
 @supports (interpolate-size: allow-keywords) {
   @media (prefers-reduced-motion: no-preference) {
     :root {
@@ -621,26 +340,13 @@ html:not(.os-mac):not(.os-win) [data-os="other"] {
     details::details-content {
       block-size: 0;
       overflow: hidden;
-      opacity: 0;
       transition:
-        block-size 450ms var(--ease-out-expo),
-        opacity 350ms var(--ease-out-expo),
-        content-visibility 450ms allow-discrete;
+        block-size 300ms var(--ease-out),
+        content-visibility 300ms allow-discrete;
     }
 
     details[open]::details-content {
       block-size: auto;
-      opacity: 1;
     }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

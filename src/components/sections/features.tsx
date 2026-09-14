@@ -1,137 +1,104 @@
-import { AppShot } from "@/components/ui/app-shot";
-import { Section, SectionHeading } from "@/components/ui/section";
-import { Reveal } from "@/components/ui/reveal";
-import { cn } from "@/lib/utils";
+import { Fragment } from "react";
 
-// Three chapters rather than a grid of loose features: each one answers a
-// different question ("¿qué cargo?", "¿qué veo?", "¿qué planifico?"), and the
-// capture that belongs to it sits next to it.
-const CHAPTERS = [
+import { AppShot } from "@/components/ui/app-shot";
+import { Leaders, Receipt, ReceiptHeading, type ReceiptRow } from "@/components/ui/receipt";
+import { Section, SectionHeading } from "@/components/ui/section";
+
+// Everything the app does, itemised like a ticket: what you record, what you
+// see, what you plan.
+const GROUPS: readonly { heading: string; rows: readonly ReceiptRow[] }[] = [
   {
-    title: "Registrás todo en un solo lugar",
-    lead: "Ingresos, gastos y transferencias entre tus propias cuentas. Cada movimiento con su categoría, su medio de pago y, si hace falta, el comprobante adjunto.",
-    items: [
-      "Cuentas y medios de pago: banco, efectivo, billetera virtual, tarjeta.",
-      "Categorías con ícono y color, y reglas que clasifican solas lo que se repite todos los meses.",
-      "Etiquetas y comprobantes adjuntos en cualquier movimiento.",
-      "Importación y exportación en CSV.",
+    heading: "Registrás",
+    rows: [
+      { label: "Cuentas", value: "banco, efectivo, billetera" },
+      { label: "Categorías", value: "con reglas automáticas" },
+      { label: "Comprobantes", value: "adjuntos al gasto" },
+      { label: "CSV", value: "importar y exportar" },
     ],
-    shots: [{ name: "transacciones", alt: "Listado de movimientos con categoría, cuenta y tipo" }],
   },
   {
-    title: "Ves a dónde se va la plata",
-    lead: "La foto del mes sin tener que armarla: cuánto entró, cuánto salió y en qué.",
-    items: [
-      "Ingresos contra gastos, y el desglose por categoría.",
-      "Presupuestos por categoría, mensuales o anuales, con lo que va consumido.",
-      "Varias monedas a la vez, con la cotización del dólar MEP al día.",
+    heading: "Ves",
+    rows: [
+      { label: "Balance", value: "ingresos contra gastos" },
+      { label: "Presupuestos", value: "mensuales o anuales" },
+      { label: "Monedas", value: "pesos y dólares, MEP al día" },
     ],
-    shots: [{ name: "resumen", alt: "Resumen del mes: balance, gastos, presupuesto disponible y ahorro" }],
   },
   {
-    title: "Planificás lo que viene",
-    lead: "Lo que ya sabés que va a pasar, cargado una vez.",
-    items: [
-      "Gastos recurrentes: la app te los propone en su fecha y vos confirmás. Nada se registra hasta que lo confirmes.",
-      "Compras en cuotas, con el saldo pendiente y las fechas siempre calculados.",
-      "Metas de ahorro, con la proyección de si llegás a la fecha que te pusiste.",
+    heading: "Planificás",
+    rows: [
+      { label: "Recurrentes", value: "vos confirmás cada uno" },
+      { label: "Cuotas", value: "saldo y fechas al día" },
+      { label: "Ahorro", value: "metas con proyección" },
     ],
-    shots: [
-      { name: "compromisos", alt: "Compromisos: movimientos recurrentes esperando confirmación" },
-      { name: "ahorros", alt: "Objetivos de ahorro, con el ritmo y la fecha en que se alcanzarían" },
-    ],
+  },
+];
+
+// `frame` crops a capture whose bottom edge cuts through a card, so it ends on
+// a whole row instead. The ratio is the capture's width over the height kept;
+// the phone ratio ends compromisos right after its "Registrar todos" card.
+const SHOTS = [
+  {
+    name: "transacciones",
+    alt: "Listado de movimientos con categoría, cuenta y tipo",
+    caption: "Cada movimiento con su categoría, su cuenta y, si hace falta, el comprobante.",
+    frame: undefined,
+  },
+  {
+    name: "resumen",
+    alt: "Resumen del mes: balance, gastos, presupuesto disponible y ahorro",
+    caption: "La foto del mes sin armarla: cuánto entró, cuánto salió y en qué.",
+    frame: "sm:aspect-[2880/1620]",
+  },
+  {
+    name: "compromisos",
+    alt: "Compromisos: movimientos recurrentes esperando confirmación",
+    caption: "Lo recurrente aparece en su fecha y no se registra hasta que lo confirmes.",
+    frame: "max-sm:aspect-[100/68] sm:aspect-[2880/1736]",
   },
 ] as const;
 
-// The narrow text column runs taller than the capture beside it, which is what
-// makes the sticky worth having: the screenshot holds still while its own list
-// of claims scrolls past it, and releases when the chapter ends. It is the
-// section's whole gesture, and it costs one class.
+// The itemised ticket holds still while the captures that back it scroll past.
 export function Features() {
   return (
-    <Section id="producto" tone="raised">
+    <Section id="producto">
       <SectionHeading
-        eyebrow="Producto"
-        index="01"
-        title="Todo lo que necesitás para llevar tus cuentas"
-        lead="Sin funciones de más ni pantallas que no vas a abrir nunca."
+        title="Todo lo de tu planilla, sin tener que armarla."
+        lead="Cargás cada movimiento una vez. Vault arma el resumen, controla el presupuesto y te avisa lo que viene."
       />
 
-      <div className="mt-24 flex flex-col gap-28 sm:mt-32 lg:gap-36">
-        {CHAPTERS.map((chapter, index) => {
-          const flipped = index % 2 === 1;
+      <div className="mt-16 grid items-start gap-16 sm:mt-20 lg:grid-cols-12 lg:gap-x-10">
+        <Receipt className="w-full max-w-md lg:sticky lg:top-24 lg:col-span-4 lg:max-w-none">
+          <ReceiptHeading>Qué incluye</ReceiptHeading>
+          {GROUPS.map((group) => (
+            <Fragment key={group.heading}>
+              <hr />
+              <p className="font-semibold uppercase">{group.heading}</p>
+              <Leaders rows={group.rows} className="mt-1" />
+            </Fragment>
+          ))}
+          <hr />
+          <Leaders rows={[{ label: "Precio hoy", value: "0,00 ARS", accent: true }]} />
+        </Receipt>
 
-          return (
-            <article
-              key={chapter.title}
-              className="grid items-start gap-12 lg:grid-cols-12 lg:gap-x-8"
-            >
-              <div
-                className={cn(
-                  "lg:col-span-4",
-                  flipped ? "lg:order-2 lg:col-start-9" : "lg:col-start-1",
-                )}
-              >
-                <Reveal
-                  as="p"
-                  index={0}
-                  className="text-sm font-medium tabular-nums text-muted-foreground"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </Reveal>
-                <Reveal
-                  as="h3"
-                  variant="line"
-                  index={1}
-                  className="mt-4 text-subtitle font-semibold text-balance"
-                >
-                  {chapter.title}
-                </Reveal>
-                <Reveal
-                  as="p"
-                  index={2}
-                  className="mt-4 leading-relaxed text-muted-foreground text-pretty"
-                >
-                  {chapter.lead}
-                </Reveal>
-
-                <ul className="mt-8 flex flex-col gap-5">
-                  {chapter.items.map((item, itemIndex) => (
-                    <Reveal
-                      key={item}
-                      as="li"
-                      index={3 + itemIndex}
-                      className="text-sm leading-relaxed text-muted-foreground"
-                    >
-                      {item}
-                    </Reveal>
-                  ))}
-                </ul>
-              </div>
-
-              {/* La columna se fija sólo cuando lleva una captura: con dos,
-                  ya es más alta que el texto de al lado y no hay nada que
-                  fijar — quedaría clavada mostrando la primera mientras la
-                  segunda queda fuera de la pantalla. */}
-              <div
-                className={cn(
-                  "flex flex-col gap-8 lg:col-span-7",
-                  chapter.shots.length === 1 && "lg:sticky lg:top-28",
-                  flipped ? "lg:order-1 lg:col-start-1" : "lg:col-start-6",
-                )}
-              >
-                {chapter.shots.map((shot) => (
-                  <AppShot
-                    key={shot.name}
-                    name={shot.name}
-                    alt={shot.alt}
-                    sizes="(min-width: 1024px) 58vw, 100vw"
-                  />
-                ))}
-              </div>
-            </article>
-          );
-        })}
+        {/* Wide on desktop; on a phone, zoomed to the top of each window, at a
+            size where the interface can actually be read. */}
+        <div className="flex flex-col gap-16 lg:col-span-8 lg:col-start-5">
+          {SHOTS.map((shot) => (
+            <figure key={shot.name}>
+              <AppShot
+                name={shot.name}
+                alt={shot.alt}
+                zoomOnPhone
+                className={shot.frame}
+                sizes="(min-width: 1024px) 66vw, (min-width: 640px) 100vw, 190vw"
+              />
+              <figcaption className="mt-4 max-w-xl text-sm text-fade text-pretty">
+                {shot.caption}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
       </div>
     </Section>
   );

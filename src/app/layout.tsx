@@ -1,34 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito } from "next/font/google";
+import { Archivo, Martian_Mono } from "next/font/google";
 
-import { MotionRuntime } from "@/components/motion-runtime";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-// El sitio pide SF Pro Rounded. Es una tipografía del sistema de Apple y su
-// licencia no permite servirla como fuente web, así que se pide por el nombre
-// genérico `ui-rounded` (ver --font-sans en globals.css): en macOS, iOS y
-// iPadOS eso resuelve exactamente a SF Pro Rounded, ya instalada, sin descargar
-// un solo byte.
-//
-// Fuera de Apple ese nombre no resuelve a nada redondeado, y la mitad del
-// público de esta app está en Windows. Nunito es el respaldo: geométrica y de
-// terminaciones redondeadas, es lo más parecido que hay con licencia abierta.
-// Va con `preload: false` a propósito — el navegador sólo descarga una fuente
-// cuando de verdad la necesita para pintar, así que quien está en Apple resuelve
-// en `ui-rounded` y nunca la pide.
-const rounded = Nunito({
-  variable: "--font-rounded",
+// Archivo carries the page; its width axis gives the headers the double-width
+// look of a receipt printer. Martian Mono is for amounts and data lines only.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
+  axes: ["wdth"],
   display: "swap",
-  preload: false,
+});
+
+const martian = Martian_Mono({
+  variable: "--font-martian",
+  subsets: ["latin"],
+  axes: ["wdth"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
     default: site.fullName,
-    template: `%s — ${site.name}`,
+    template: `%s | ${site.name}`,
   },
   description: site.tagline,
   openGraph: {
@@ -48,22 +44,18 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: light)", color: "#eeefec" },
+    { media: "(prefers-color-scheme: dark)", color: "#111213" },
   ],
 };
 
 // Runs before first paint so a visitor who prefers dark mode never sees a
-// white flash, and so the download block leads with the right platform instead
+// light flash, and so the download block leads with the right platform instead
 // of swapping under the cursor. Kept as a raw string on purpose: React would
 // otherwise defer it to hydration, which is exactly too late.
 const bootScript = `
 (function () {
   var root = document.documentElement;
-  // Marks that scripting is available. The reveal styles hang off this class,
-  // so a visitor without JavaScript gets the page fully visible rather than a
-  // column of elements stuck at opacity 0.
-  root.classList.add("js");
   try {
     var stored = localStorage.getItem("theme");
     var dark = stored
@@ -72,15 +64,11 @@ const bootScript = `
     if (dark) root.classList.add("dark");
   } catch (e) {}
 
-  // Which download to lead with. Only the two platforms the release actually
-  // builds for get a class; Linux and phones fall through to the block that
-  // offers both, which is also what a visitor without JavaScript sees.
+  // Which download to lead with. Only the two platforms the release builds for
+  // get a class; Linux and phones fall through to the block that offers both.
   try {
-    // El user agent va último y no es un lujo: navigator.platform está obsoleto
-    // y los navegadores lo están vaciando — un Safari al día en macOS devuelve
-    // cadena vacía, la cadena entera se cae, y un usuario de Mac termina viendo
-    // el bloque neutro con los dos botones en vez del suyo. El user agent, en
-    // cambio, siempre está y dice "Macintosh" o "Windows".
+    // The user agent goes last and is not a luxury: navigator.platform is
+    // deprecated and an up-to-date Safari on macOS returns an empty string.
     var platform =
       (navigator.userAgentData && navigator.userAgentData.platform) ||
       navigator.platform ||
@@ -89,8 +77,8 @@ const bootScript = `
     if (/win/i.test(platform)) {
       root.classList.add("os-win");
     } else if (/mac/i.test(platform) && (navigator.maxTouchPoints || 0) <= 1) {
-      // An iPad reports "MacIntel" as well; the touch points are what tell the
-      // two apart, and a tablet has nowhere to put a .dmg.
+      // An iPad reports "MacIntel" too; touch points tell them apart, and a
+      // tablet has nowhere to put a .dmg.
       root.classList.add("os-mac");
     }
   } catch (e) {}
@@ -102,15 +90,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="es"
       suppressHydrationWarning
-      className={`${rounded.variable} h-full antialiased`}
+      className={`${archivo.variable} ${martian.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
       </head>
-      <body className="flex min-h-full flex-col">
-        {children}
-        <MotionRuntime />
-      </body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

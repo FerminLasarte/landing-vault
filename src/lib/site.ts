@@ -4,7 +4,7 @@
 export const site = {
   name: "Vault",
   // Used in <title> and anywhere the product needs its full name.
-  fullName: "Vault — Finanzas personales, en tu dispositivo",
+  fullName: "Vault: tus finanzas personales, en tu computadora",
   tagline: "Tus finanzas personales, en tu computadora. Sin nube, sin cuentas.",
   // Where the site is served from. metadataBase turns every relative
   // OG/canonical URL absolute off this, and crawlers need it to be the real
@@ -18,7 +18,7 @@ export const site = {
 } as const;
 
 export const nav = [
-  { href: "#producto", label: "Producto" },
-  { href: "#local-first", label: "Por qué local-first" },
+  { href: "#producto", label: "Qué hace" },
+  { href: "#local-first", label: "Dónde quedan tus datos" },
   { href: "#preguntas", label: "Preguntas" },
 ] as const;

@@ -44,7 +44,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-      className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="inline-flex size-9 items-center justify-center rounded-[10px] text-fade transition-colors duration-150 hover:bg-paper hover:text-ink"
     >
       {isDark === null ? (
         <span className="size-4" />

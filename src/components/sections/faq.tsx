@@ -1,14 +1,13 @@
 import { Plus } from "lucide-react";
 
 import { Section, SectionHeading } from "@/components/ui/section";
-import { revealDelay } from "@/lib/reveal";
 
-// Native <details>: the accordion behaviour comes free, it works before
-// hydration, and the browser finds the text with ctrl+F even while collapsed.
+// Native <details>: the accordion comes free, works before hydration, and the
+// browser finds the text with ctrl+F even while it is collapsed.
 const QUESTIONS = [
   {
     q: "¿Para qué sistemas operativos?",
-    a: "macOS y Windows. El .dmg es universal, así que corre igual en Apple Silicon y en Intel; el instalador de Windows es de 64 bits, para 10 u 11. Linux todavía no, aunque Tauri compile para ahí también.",
+    a: "macOS y Windows. El .dmg es universal, así que corre igual en Apple Silicon y en Intel; el instalador de Windows es de 64 bits, para 10 u 11. Linux todavía no.",
   },
   {
     q: "¿Por qué me avisa que la app no es segura?",
@@ -34,33 +33,24 @@ const QUESTIONS = [
 
 export function Faq() {
   return (
-    <Section id="preguntas" tone="raised">
-      <div className="grid gap-14 lg:grid-cols-12 lg:gap-x-8">
+    <Section id="preguntas">
+      <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-10">
         <SectionHeading
-          eyebrow="Preguntas"
-          index="03"
-          title="Lo que suelen preguntar"
-          className="lg:col-span-4 lg:sticky lg:top-32 lg:self-start"
+          title="Lo que suelen preguntar."
+          className="lg:sticky lg:top-24 lg:col-span-4 lg:self-start"
         />
 
-        <div className="lg:col-span-7 lg:col-start-6">
-          {QUESTIONS.map((item, index) => (
-            <details
-              key={item.q}
-              data-reveal
-              style={revealDelay(index, 60)}
-              className="group border-b border-border first:border-t"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-8 py-6 text-lead font-medium transition-colors duration-300 hover:text-muted-foreground">
+        <div className="border-t lg:col-span-7 lg:col-start-6">
+          {QUESTIONS.map((item) => (
+            <details key={item.q} className="group border-b">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-8 py-6 text-lead font-medium [&::-webkit-details-marker]:hidden">
                 {item.q}
                 <Plus
                   aria-hidden
-                  className="size-4 shrink-0 text-muted-foreground transition-transform duration-500 ease-out-expo group-open:rotate-135"
+                  className="size-4 shrink-0 text-fade transition-[transform,color] duration-200 ease-out group-open:rotate-45 group-hover:text-ink"
                 />
               </summary>
-              <p className="max-w-2xl pb-7 leading-relaxed text-muted-foreground text-pretty">
-                {item.a}
-              </p>
+              <p className="max-w-2xl pb-7 leading-relaxed text-fade text-pretty">{item.a}</p>
             </details>
           ))}
         </div>
