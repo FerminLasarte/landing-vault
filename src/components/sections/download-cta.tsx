@@ -1,47 +1,29 @@
 import { DownloadBlock } from "@/components/download";
-import { Section } from "@/components/ui/section";
-import { Reveal } from "@/components/ui/reveal";
-import { revealDelay } from "@/lib/reveal";
+import { Container } from "@/components/ui/container";
 
-const HEADLINE = ["Bajala y abrila.", "No hay más."] as const;
-
-// The closing block, and the target of the header button. It repeats the hero's
-// download rather than sending the visitor back up: whoever read the whole page
-// is exactly the person ready to install it.
-//
-// The one inverted panel on the site. It works by redefining the tokens rather
-// than restyling anything, so the download block — buttons, muted notes, links
-// — drops in unchanged and comes out inverted.
+// The stub you tear off at the end of the ticket, and the target of the header
+// button. It repeats the download rather than sending the visitor back up:
+// whoever read the whole page is exactly the person ready to install it.
 export function DownloadCta() {
   return (
-    <Section id="descargar" tone="invert">
-      <div className="grid gap-14 lg:grid-cols-12 lg:gap-x-8">
-        <div className="lg:col-span-5">
-          <Reveal as="p" index={0} className="eyebrow">
-            <span className="eyebrow-index">04</span>
-            Descargar
-          </Reveal>
-          <h2 className="mt-6 text-title font-semibold">
-            {HEADLINE.map((line, index) => (
-              <Reveal key={line} as="span" variant="line" index={index + 1}>
-                {line}
-              </Reveal>
-            ))}
-          </h2>
-          <Reveal
-            as="p"
-            index={3}
-            className="mt-6 max-w-md text-lead text-muted-foreground text-pretty"
-          >
-            Sin cuenta, sin registro, sin conexión. Se instala en tu computadora
-            y los datos se quedan ahí.
-          </Reveal>
-        </div>
+    <section id="descargar" className="pb-24 sm:pb-32">
+      <Container>
+        <div className="receipt-shadow">
+          <div className="stub grid gap-12 bg-paper px-6 pb-10 pt-14 sm:px-12 sm:pb-14 sm:pt-20 lg:grid-cols-12 lg:gap-x-10 lg:px-16">
+            <div className="lg:col-span-5">
+              <h2 className="font-wide text-title font-semibold text-balance">
+                Bajala y abrila. No hay más.
+              </h2>
+              <p className="mt-6 max-w-md text-lead text-fade text-pretty">
+                Sin cuenta, sin registro, sin conexión. Se instala en tu computadora y los
+                datos se quedan ahí.
+              </p>
+            </div>
 
-        <div className="lg:col-span-6 lg:col-start-7 lg:pt-2">
-          <DownloadBlock revealStyle={revealDelay(4)} />
+            <DownloadBlock className="lg:col-span-6 lg:col-start-7 lg:pt-2" />
+          </div>
         </div>
-      </div>
-    </Section>
+      </Container>
+    </section>
   );
 }

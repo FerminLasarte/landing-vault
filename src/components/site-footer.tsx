@@ -5,21 +5,21 @@ import { Logo } from "@/components/ui/logo";
 import { assetHref, getLatestRelease, RELEASES_PAGE } from "@/lib/release";
 import { site } from "@/lib/site";
 
-// In-page anchors go through the router; anything leaving the site — the repo,
-// and above all the installers — is a plain anchor. Same rule as the download
-// buttons: the assets come back as attachments, so there is nothing to navigate
-// to and no reason to involve the client router in it.
+const linkClass = "text-fade transition-colors duration-150 hover:text-ink";
+
+// In-page anchors go through the router; anything leaving the site, the
+// installers above all, is a plain anchor.
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   if (href.startsWith("#")) {
     return (
-      <Link href={href} className="link">
+      <Link href={href} className={linkClass}>
         {children}
       </Link>
     );
   }
 
   return (
-    <a href={href} className="link">
+    <a href={href} className={linkClass}>
       {children}
     </a>
   );
@@ -34,8 +34,8 @@ function Column({
 }) {
   return (
     <div>
-      <h2 className="eyebrow">{title}</h2>
-      <ul className="mt-6 flex flex-col items-start gap-4 text-sm">
+      <h2 className="text-sm font-semibold">{title}</h2>
+      <ul className="mt-5 flex flex-col items-start gap-3.5 text-sm">
         {links.map((link) => (
           <li key={link.label}>
             <FooterLink href={link.href}>{link.label}</FooterLink>
@@ -47,9 +47,7 @@ function Column({
 }
 
 export async function SiteFooter() {
-  // Free: the hero already asked for this on the same render, and the call is
-  // memoised. It buys the footer a direct download for each platform instead of
-  // a link that only promises one.
+  // Memoised: the download blocks already asked for this on the same render.
   const release = await getLatestRelease();
 
   const notes = release.version
@@ -57,24 +55,22 @@ export async function SiteFooter() {
     : RELEASES_PAGE;
 
   return (
-    <footer>
-      <Container className="py-20 sm:py-24">
-        <div className="grid gap-14 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
+    <footer className="border-t">
+      <Container className="py-16 sm:py-20">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
           <div className="max-w-xs">
-            <div className="flex items-center gap-2.5 text-base font-semibold tracking-tight">
-              <Logo className="h-6 w-auto" />
+            <div className="flex items-center gap-2.5 font-wide text-base font-semibold">
+              <Logo className="h-5 w-auto" />
               {site.name}
             </div>
-            <p className="mt-5 text-sm leading-relaxed text-muted-foreground text-pretty">
-              {site.tagline}
-            </p>
+            <p className="mt-4 text-sm leading-relaxed text-fade text-pretty">{site.tagline}</p>
           </div>
 
           <Column
             title="Producto"
             links={[
               { href: "#producto", label: "Qué hace" },
-              { href: "#local-first", label: "Por qué local-first" },
+              { href: "#local-first", label: "Dónde quedan tus datos" },
               { href: "#preguntas", label: "Preguntas" },
               { href: "#descargar", label: "Descargar" },
             ]}
@@ -92,7 +88,7 @@ export async function SiteFooter() {
           <Column
             title="Proyecto"
             links={[
-              { href: site.repo, label: "Código" },
+              { href: site.repo, label: "Código fuente" },
               { href: `${site.repo}/releases`, label: "Todas las versiones" },
               { href: notes, label: "Notas de la versión" },
               { href: `${site.repo}/issues`, label: "Reportar un problema" },
@@ -100,14 +96,9 @@ export async function SiteFooter() {
           />
         </div>
 
-        <div className="mt-20 flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {site.name}
-          </p>
-          <p className="tabular-nums">
-            {release.version ? `${release.version} · ` : ""}macOS · Windows
-          </p>
-        </div>
+        <p className="mt-16 text-sm text-fade">
+          © {new Date().getFullYear()} {site.name}. Para macOS y Windows.
+        </p>
       </Container>
     </footer>
   );

@@ -51,7 +51,6 @@ Nombres de archivo, que son los que el sitio busca:
 | Transacciones | `transacciones-light.png` / `-dark`  |
 | Estadísticas › Resumen | `resumen-light.png` / `-dark`      |
 | Compromisos   | `compromisos-light.png` / `-dark`    |
-| Ahorros       | `ahorros-light.png` / `-dark`        |
 
 La del hero es la pestaña **Análisis** de Estadísticas, que es donde están los
 gráficos; `resumen-*.png` es la pestaña **Resumen** de la misma pantalla.

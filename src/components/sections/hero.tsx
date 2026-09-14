@@ -1,121 +1,85 @@
-import Link from "next/link";
-
 import { DownloadBlock } from "@/components/download";
 import { AppShot } from "@/components/ui/app-shot";
 import { Container } from "@/components/ui/container";
-import { Reveal } from "@/components/ui/reveal";
-import { getLatestRelease } from "@/lib/release";
-import { revealDelay, REVEAL_STEP_HERO as STEP } from "@/lib/reveal";
+import { Logo } from "@/components/ui/logo";
+import { Leaders, Receipt, ReceiptHeading, type ReceiptRow } from "@/components/ui/receipt";
 
-// Set as three fixed lines rather than left to wrap. At display size the line
-// breaks are a typographic decision, not a side effect of the viewport — and
-// each line needs to be its own element anyway, because the entrance slides it
-// up from behind the one above.
-const HEADLINE = ["Tus finanzas", "no salen de tu", "computadora."] as const;
+// A sample month. The categories are made up, but they add up to the total the
+// app's own capture below shows, so the ticket and the screenshot tell the same
+// story. Labelled as sample data on the ticket itself.
+const EXPENSES: readonly ReceiptRow[] = [
+  { label: "Alquiler", value: "320.000,00" },
+  { label: "Supermercado", value: "214.300,00" },
+  { label: "Salidas", value: "100.000,00" },
+  { label: "Tarjeta, cuota 3 de 6", value: "92.850,00" },
+  { label: "Servicios", value: "61.450,00" },
+  { label: "Transporte", value: "38.200,00" },
+];
 
-// The fold has one job: make someone want to keep going. Three decisions carry
-// it.
-//
-// The composition is asymmetric and bottom-aligned. The headline holds the left
-// seven columns at a size that fills them; the pitch and the download sit in the
-// last four, aligned to the headline's baseline rather than its top. Stacking
-// them instead — which is what this was — left the right half of the fold empty
-// and the two blocks reading as an afterthought under a banner.
-//
-// The height is spent, not filled. Everything above the capture is compact
-// enough that the window itself clears the fold by a third of the screen: the
-// visitor sees the product has more to show without being told.
-//
-// And three things move: the headline arrives line by line, the whole text
-// block lifts and dims as the page scrolls under it, and the capture follows
-// the pointer. The first happens once, the second answers the scroll, the third
-// answers the visitor — between them the fold is never still.
-export async function Hero() {
-  const release = await getLatestRelease();
+const PROOF: readonly ReceiptRow[] = [
+  { label: "Guardado en", value: "tu computadora", accent: true },
+  { label: "Cuenta creada", value: "ninguna" },
+  { label: "Copias en la nube", value: "0" },
+];
 
+// The fold states the offer on the left and proves it on the right: a ticket
+// of the month that prints line by line as the page opens, ending in where the
+// data lives. The real app capture hangs from it.
+export function Hero() {
   return (
-    <section className="pt-14 sm:pt-20">
+    <section className="pb-24 pt-12 sm:pb-32 sm:pt-16 lg:pt-24">
       <Container>
-        <div data-hero-lift>
-          <div className="flex items-baseline justify-between gap-6">
-            <Reveal as="p" index={0} step={STEP} className="eyebrow">
-              App de escritorio para macOS y Windows
-            </Reveal>
-            {release.version ? (
-              <Reveal
-                as="p"
-                index={0}
-                step={STEP}
-                className="hidden text-sm tabular-nums text-muted-foreground sm:block"
-              >
-                {release.version}
-              </Reveal>
-            ) : null}
-          </div>
-
-          <div className="mt-10 grid gap-y-12 sm:mt-12 xl:grid-cols-12 xl:items-end xl:gap-x-8">
-            <h1 className="text-display font-semibold xl:col-span-7">
-              {HEADLINE.map((line, index) => (
-                <Reveal
-                  key={line}
-                  as="span"
-                  variant="line"
-                  index={index + 1}
-                  step={STEP}
-                >
-                  {line}
-                </Reveal>
-              ))}
+        <div className="grid items-start gap-16 lg:grid-cols-12 lg:gap-x-10">
+          <div className="lg:col-span-7">
+            <h1 className="font-wide text-display font-semibold text-balance">
+              Tus cuentas, en tu computadora.
             </h1>
-
-            {/* `pb-2` alinea la última línea de la bajada con la base del titular
-              en vez de con su caja, que es lo que hace que las dos columnas se
-              lean como una sola composición. */}
-            <div className="xl:col-span-4 xl:col-start-9 xl:pb-2">
-              <Reveal
-                as="p"
-                index={4}
-                step={STEP}
-                className="max-w-md text-lead text-muted-foreground text-pretty"
-              >
-                Vault registra tus gastos, controla tus presupuestos y sigue tus
-                ahorros. Todo se guarda en un archivo, en tu disco. Sin
-                servidor, sin cuenta, sin nube.
-              </Reveal>
-
-              <DownloadBlock
-                className="mt-8"
-                revealStyle={revealDelay(5, STEP)}
-                detail="brief"
-                size="lg"
-              />
-            </div>
+            <p className="mt-6 max-w-md text-lead text-fade text-pretty">
+              Vault ordena gastos, presupuestos y ahorros como tu planilla, pero sin
+              fórmulas. Sin cuenta, sin nube.
+            </p>
+            <DownloadBlock className="mt-10" detail="brief" />
           </div>
 
-          <Reveal index={6} step={STEP} className="mt-14 sm:mt-16">
-            <Link
-              href="#producto"
-              className="inline-flex items-center gap-5 text-sm font-medium text-muted-foreground transition-colors duration-300 hover:text-foreground"
-            >
-              <span className="cue-track" aria-hidden />
-              Ver qué hace
-            </Link>
-          </Reveal>
+          <figure
+            aria-label="Ejemplo de un resumen mensual en Vault"
+            className="relative z-10 lg:col-span-5 lg:col-start-8 xl:col-span-4 xl:col-start-9"
+          >
+            <Receipt print="load" className="mx-auto w-full max-w-sm lg:max-w-none">
+              <div className="flex items-center gap-2">
+                <Logo className="h-4 w-auto" />
+                <ReceiptHeading>Vault</ReceiptHeading>
+              </div>
+              <p className="text-fade">Resumen de septiembre 2026</p>
+              <hr />
+              <Leaders rows={EXPENSES} />
+              <hr />
+              <div className="flex items-baseline justify-between gap-4 font-sans font-wide font-semibold">
+                <span className="text-sm uppercase">Total gastos</span>
+                <span className="text-lg tabular-nums">826.800,00</span>
+              </div>
+              <p className="text-right text-fade">ARS</p>
+              <hr />
+              <Leaders rows={[{ label: "Dólar MEP", value: "1.533,70 ARS" }]} />
+              <p className="text-fade">Origen: API pública, solo lectura</p>
+              <hr />
+              <Leaders rows={PROOF} />
+              <p className="mt-6 text-center text-fade">Datos de ejemplo</p>
+            </Receipt>
+          </figure>
         </div>
       </Container>
 
-      {/* La captura rompe la medida de lectura porque es el sujeto del pliegue,
-          y asoma un tercio de pantalla: lo suficiente para que se entienda que
-          hay producto abajo, no tanto como para gastar el hallazgo. */}
-      <Container width="wide" className="tilt-stage mt-14 sm:mt-16">
-        <div data-tilt>
-          <AppShot
-            name="estadisticas"
-            alt="Estadísticas de Vault: gastos por categoría e ingresos contra gastos, mes a mes"
-            priority
-            sizes="100vw"
-          />
-        </div>
+      {/* The capture is the ticket's attachment: on wide screens the torn edge
+          lands on the window's title bar instead of floating above it. Any
+          deeper and it half-covers the app's own toolbar buttons. */}
+      <Container width="wide" className="mt-8 lg:-mt-6">
+        <AppShot
+          name="estadisticas"
+          alt="Estadísticas de Vault: gastos por categoría e ingresos contra gastos, mes a mes"
+          important
+          sizes="(min-width: 100rem) 100rem, 100vw"
+        />
       </Container>
     </section>
   );

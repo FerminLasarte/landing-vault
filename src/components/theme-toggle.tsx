@@ -28,7 +28,7 @@ function getServerSnapshot(): boolean | null {
 export function ThemeToggle() {
   const isDark = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  function toggle() {
+  function apply() {
     const next = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", next);
     try {
@@ -39,12 +39,26 @@ export function ThemeToggle() {
     }
   }
 
+  // A view transition crossfades the two themes (timing in globals.css).
+  // Without the API, or with reduced motion, the theme simply switches.
+  function toggle() {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || !("startViewTransition" in document)) {
+      apply();
+      return;
+    }
+    // The browser skips the animation (a hidden tab, a second click mid-way)
+    // by rejecting `ready`; the theme has changed either way, so there is
+    // nothing to report.
+    document.startViewTransition(apply).ready.catch(() => {});
+  }
+
   return (
     <button
       type="button"
       onClick={toggle}
       aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-      className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="press inline-flex size-9 items-center justify-center rounded-[10px] text-fade hover:bg-paper hover:text-ink"
     >
       {isDark === null ? (
         <span className="size-4" />

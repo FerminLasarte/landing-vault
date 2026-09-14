@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-14T02:10:07Z",
+  "title": "Design System: Vault",
+  "extensions": {
+    "colorMeta": {
+      "stamp-ink": { "role": "primary", "displayName": "Tinta de sello", "canonical": "#c92a62", "tonalRamp": ["oklch(15% 0.053 5.9)", "oklch(26% 0.090 5.9)", "oklch(38% 0.128 5.9)", "oklch(49% 0.165 5.9)", "oklch(61% 0.196 5.9)", "oklch(72% 0.160 5.9)", "oklch(84% 0.123 5.9)", "oklch(95% 0.086 5.9)"] },
+      "stamp-ink-night": { "role": "primary", "displayName": "Tinta de sello, noche", "canonical": "#f0689a", "tonalRamp": ["oklch(15% 0.047 359.6)", "oklch(26% 0.081 359.6)", "oklch(38% 0.114 359.6)", "oklch(49% 0.147 359.6)", "oklch(61% 0.174 359.6)", "oklch(72% 0.143 359.6)", "oklch(84% 0.110 359.6)", "oklch(95% 0.076 359.6)"] },
+      "stamp-ink-dimmed": { "role": "primary", "displayName": "Tinta de sello, papel atenuado", "canonical": "#9e1d4b", "tonalRamp": ["oklch(15% 0.045 5.9)", "oklch(26% 0.077 5.9)", "oklch(38% 0.108 5.9)", "oklch(49% 0.140 5.9)", "oklch(61% 0.165 5.9)", "oklch(72% 0.136 5.9)", "oklch(84% 0.104 5.9)", "oklch(95% 0.073 5.9)"] },
+      "desk-grey": { "role": "neutral", "displayName": "Desk Grey", "canonical": "#eeefec", "tonalRamp": ["oklch(15% 0.004 121.6)", "oklch(26% 0.004 121.6)", "oklch(38% 0.004 121.6)", "oklch(49% 0.004 121.6)", "oklch(61% 0.004 121.6)", "oklch(72% 0.004 121.6)", "oklch(84% 0.004 121.6)", "oklch(95% 0.004 121.6)"] },
+      "thermal-paper": { "role": "neutral", "displayName": "Thermal Paper", "canonical": "#fbfbfa", "tonalRamp": ["oklch(15% 0.001 106.4)", "oklch(26% 0.001 106.4)", "oklch(38% 0.001 106.4)", "oklch(49% 0.001 106.4)", "oklch(61% 0.001 106.4)", "oklch(72% 0.001 106.4)", "oklch(84% 0.001 106.4)", "oklch(95% 0.001 106.4)"] },
+      "thermal-ink": { "role": "neutral", "displayName": "Thermal Ink", "canonical": "#1e1f22", "tonalRamp": ["oklch(15% 0.006 271.2)", "oklch(26% 0.006 271.2)", "oklch(38% 0.006 271.2)", "oklch(49% 0.006 271.2)", "oklch(61% 0.006 271.2)", "oklch(72% 0.006 271.2)", "oklch(84% 0.006 271.2)", "oklch(95% 0.006 271.2)"] },
+      "faded-ink": { "role": "neutral", "displayName": "Faded Ink", "canonical": "#62646a", "tonalRamp": ["oklch(15% 0.010 271.2)", "oklch(26% 0.010 271.2)", "oklch(38% 0.010 271.2)", "oklch(49% 0.010 271.2)", "oklch(61% 0.010 271.2)", "oklch(72% 0.010 271.2)", "oklch(84% 0.010 271.2)", "oklch(95% 0.010 271.2)"] },
+      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "#d5d7d3", "tonalRamp": ["oklch(15% 0.006 128.5)", "oklch(26% 0.006 128.5)", "oklch(38% 0.006 128.5)", "oklch(49% 0.006 128.5)", "oklch(61% 0.006 128.5)", "oklch(72% 0.006 128.5)", "oklch(84% 0.006 128.5)", "oklch(95% 0.006 128.5)"] },
+      "night-desk": { "role": "neutral", "displayName": "Night Desk", "canonical": "#111213", "tonalRamp": ["oklch(15% 0.003 248.0)", "oklch(26% 0.003 248.0)", "oklch(38% 0.003 248.0)", "oklch(49% 0.003 248.0)", "oklch(61% 0.003 248.0)", "oklch(72% 0.003 248.0)", "oklch(84% 0.003 248.0)", "oklch(95% 0.003 248.0)"] },
+      "night-sheet": { "role": "neutral", "displayName": "Night Sheet", "canonical": "#1b1c1e", "tonalRamp": ["oklch(15% 0.004 264.5)", "oklch(26% 0.004 264.5)", "oklch(38% 0.004 264.5)", "oklch(49% 0.004 264.5)", "oklch(61% 0.004 264.5)", "oklch(72% 0.004 264.5)", "oklch(84% 0.004 264.5)", "oklch(95% 0.004 264.5)"] },
+      "night-ink": { "role": "neutral", "displayName": "Night Ink", "canonical": "#ecedea", "tonalRamp": ["oklch(15% 0.004 121.6)", "oklch(26% 0.004 121.6)", "oklch(38% 0.004 121.6)", "oklch(49% 0.004 121.6)", "oklch(61% 0.004 121.6)", "oklch(72% 0.004 121.6)", "oklch(84% 0.004 121.6)", "oklch(95% 0.004 121.6)"] },
+      "night-fade": { "role": "neutral", "displayName": "Night Fade", "canonical": "#9b9da2", "tonalRamp": ["oklch(15% 0.008 268.5)", "oklch(26% 0.008 268.5)", "oklch(38% 0.008 268.5)", "oklch(49% 0.008 268.5)", "oklch(61% 0.008 268.5)", "oklch(72% 0.008 268.5)", "oklch(84% 0.008 268.5)", "oklch(95% 0.008 268.5)"] },
+      "night-hairline": { "role": "neutral", "displayName": "Night Hairline", "canonical": "#2e3033", "tonalRamp": ["oklch(15% 0.006 258.4)", "oklch(26% 0.006 258.4)", "oklch(38% 0.006 258.4)", "oklch(49% 0.006 258.4)", "oklch(61% 0.006 258.4)", "oklch(72% 0.006 258.4)", "oklch(84% 0.006 258.4)", "oklch(95% 0.006 258.4)"] },
+      "dimmed-paper": { "role": "neutral", "displayName": "Dimmed Paper", "canonical": "#c9cac6", "tonalRamp": ["oklch(15% 0.006 117.9)", "oklch(26% 0.006 117.9)", "oklch(38% 0.006 117.9)", "oklch(49% 0.006 117.9)", "oklch(61% 0.006 117.9)", "oklch(72% 0.006 117.9)", "oklch(84% 0.006 117.9)", "oklch(95% 0.006 117.9)"] },
+      "dimmed-fade": { "role": "neutral", "displayName": "Dimmed Fade", "canonical": "#4a4c51", "tonalRamp": ["oklch(15% 0.009 268.4)", "oklch(26% 0.009 268.4)", "oklch(38% 0.009 268.4)", "oklch(49% 0.009 268.4)", "oklch(61% 0.009 268.4)", "oklch(72% 0.009 268.4)", "oklch(84% 0.009 268.4)", "oklch(95% 0.009 268.4)"] },
+      "dimmed-hairline": { "role": "neutral", "displayName": "Dimmed Hairline", "canonical": "#a3a5a1", "tonalRamp": ["oklch(15% 0.006 128.6)", "oklch(26% 0.006 128.6)", "oklch(38% 0.006 128.6)", "oklch(49% 0.006 128.6)", "oklch(61% 0.006 128.6)", "oklch(72% 0.006 128.6)", "oklch(84% 0.006 128.6)", "oklch(95% 0.006 128.6)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The single hero headline, Archivo at 118% width." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings and the stub heading, at double width." },
+      "title": { "displayName": "Title", "purpose": "Statements in a ruled list (the verifiable facts)." },
+      "lead": { "displayName": "Lead", "purpose": "The sentence under a heading, in Faded Ink; FAQ questions at weight 500." },
+      "body": { "displayName": "Body", "purpose": "Answers and fact bodies, in Faded Ink." },
+      "label": { "displayName": "Label", "purpose": "Nav, captions, footer links, download alternatives." },
+      "button": { "displayName": "Button", "purpose": "Text inside primary and secondary buttons." },
+      "receipt-heading": { "displayName": "Receipt heading", "purpose": "The double-width uppercase mark line at the top of a ticket, and ticket totals." },
+      "data": { "displayName": "Data", "purpose": "Every line inside a receipt, plus version and size metadata. Martian Mono at 87.5% width, tabular figures; 0.75rem, 0.8125rem from 40rem." }
+    },
+    "shadows": [
+      { "name": "paper-lift", "value": "filter: drop-shadow(0 1px 1px rgb(30 31 34 / 0.06)) drop-shadow(0 14px 28px rgb(30 31 34 / 0.08))", "purpose": "Receipts and the stub on the light desk, applied to a wrapper so the serrated mask does not clip it." },
+      { "name": "paper-lift-night", "value": "filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.6)) drop-shadow(0 18px 36px rgb(0 0 0 / 0.55))", "purpose": "Receipts and the stub on the dark desk." },
+      { "name": "header-rule", "value": "box-shadow: 0 1px 0 var(--rule)", "purpose": "Hairline under the sticky header (fades in over the first 4rem of scroll) and the mobile menu sheet." },
+      { "name": "control-ring", "value": "box-shadow: inset 0 0 0 1px var(--rule)", "purpose": "Secondary button outline, drawn inside so it never shifts layout." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Button press and disclosure unfold." },
+      { "name": "print-load", "value": "animation: print 1.4s steps(22, end) 250ms both; @keyframes print { from { clip-path: inset(0 0 100% 0) } to { clip-path: inset(0 0 0 0) } }", "purpose": "The hero receipt feeding out of the printer on page load." },
+      { "name": "print-scroll", "value": "animation: print steps(14, end) both; animation-timeline: view(); animation-range: entry 0% entry 100%", "purpose": "Every other receipt prints as it enters the viewport; the range ends at entry 100% so sticky receipts are complete before they pin." },
+      { "name": "header-settle", "value": "animation-timeline: scroll(root block); animation-range: 0 4rem", "purpose": "Header hairline appears once content scrolls under it." },
+      { "name": "press", "value": "transform: scale(0.97); transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Button active state." },
+      { "name": "color-shift", "value": "150ms ease", "purpose": "Hover colour, fill and underline changes (pointer devices only)." },
+      { "name": "unfold", "value": "block-size 300ms cubic-bezier(0.23, 1, 0.32, 1), content-visibility 300ms allow-discrete", "purpose": "Disclosure answers, where interpolate-size is supported." },
+      { "name": "reduced-motion", "value": "@media (prefers-reduced-motion: no-preference) only", "purpose": "All animation is gated; content is authored in its final state." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid ink slab for downloads and the header CTA.",
+      "html": "<a class=\"ds-btn ds-btn-primary\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 17V3\"/><path d=\"m6 11 6 6 6-6\"/><path d=\"M19 21H5\"/></svg>Descargar para macOS</a>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; border-radius: 10px; padding: 0.8125rem 1.25rem; font-family: Archivo, ui-sans-serif, system-ui, sans-serif; font-size: 0.9375rem; font-weight: 600; white-space: nowrap; text-decoration: none; transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms ease, box-shadow 150ms ease; } .ds-btn-primary { background-color: var(--ink, #1e1f22); color: var(--paper, #fbfbfa); } .ds-btn-primary:hover { background-color: color-mix(in oklab, var(--ink, #1e1f22) 84%, var(--paper, #fbfbfa)); } .ds-btn:active { transform: scale(0.97); } .ds-btn:focus-visible { outline: 2px solid var(--ink, #1e1f22); outline-offset: 3px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined sibling for the second platform and the source-code link.",
+      "html": "<a class=\"ds-btn2 ds-btn2-secondary\" href=\"#\">Ver el código en GitHub</a>",
+      "css": ".ds-btn2 { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; border-radius: 10px; padding: 0.8125rem 1.25rem; font-family: Archivo, ui-sans-serif, system-ui, sans-serif; font-size: 0.9375rem; font-weight: 600; white-space: nowrap; text-decoration: none; transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms ease; } .ds-btn2-secondary { box-shadow: inset 0 0 0 1px var(--rule, #d5d7d3); color: var(--ink, #1e1f22); background: transparent; } .ds-btn2-secondary:hover { background-color: var(--paper, #fbfbfa); } .ds-btn2:active { transform: scale(0.97); } .ds-btn2:focus-visible { outline: 2px solid var(--ink, #1e1f22); outline-offset: 3px; }"
+    },
+    {
+      "name": "Icon Button",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "36px square control for the theme toggle and mobile menu.",
+      "html": "<button class=\"ds-icon-btn\" type=\"button\" aria-label=\"Cambiar a modo oscuro\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401\"/></svg></button>",
+      "css": ".ds-icon-btn { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border: 0; border-radius: 10px; background: transparent; color: var(--fade, #62646a); cursor: pointer; transition: color 150ms ease, background-color 150ms ease; } .ds-icon-btn:hover { background-color: var(--paper, #fbfbfa); color: var(--ink, #1e1f22); } .ds-icon-btn:focus-visible { outline: 2px solid var(--ink, #1e1f22); outline-offset: 3px; }"
+    },
+    {
+      "name": "Text Link",
+      "kind": "custom",
+      "refersTo": "nav-link",
+      "description": "Inline link with a hairline underline that takes the text colour on hover.",
+      "html": "<p class=\"ds-link-row\">¿Estás en Windows? <a class=\"ds-link\" href=\"#\">Bajá el instalador</a></p>",
+      "css": ".ds-link-row { font-family: Archivo, ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; color: var(--fade, #62646a); } .ds-link { color: inherit; text-decoration-line: underline; text-decoration-color: var(--rule, #d5d7d3); text-decoration-thickness: 1px; text-underline-offset: 0.25em; transition: text-decoration-color 150ms ease; } .ds-link:hover { text-decoration-color: currentColor; } .ds-link:focus-visible { outline: 2px solid var(--ink, #1e1f22); outline-offset: 3px; }"
+    },
+    {
+      "name": "Header Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Sticky 64px header: double-width wordmark, faded label links, small primary button.",
+      "html": "<header class=\"ds-header\"><span class=\"ds-wordmark\">Vault</span><nav class=\"ds-nav\"><a href=\"#\">Qué hace</a><a href=\"#\">Dónde quedan tus datos</a><a href=\"#\">Preguntas</a></nav><a class=\"ds-btn-sm\" href=\"#\">Descargar</a></header>",
+      "css": ".ds-header { display: flex; height: 64px; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 2rem; background-color: var(--ground, #eeefec); box-shadow: 0 1px 0 var(--rule, #d5d7d3); font-family: Archivo, ui-sans-serif, system-ui, sans-serif; color: var(--ink, #1e1f22); } .ds-wordmark { font-stretch: 118%; font-weight: 600; font-size: 1rem; } .ds-nav { display: flex; gap: 2rem; font-size: 0.875rem; } .ds-nav a { color: var(--fade, #62646a); text-decoration: none; transition: color 150ms ease; } .ds-nav a:hover { color: var(--ink, #1e1f22); } .ds-nav a:focus-visible, .ds-btn-sm:focus-visible { outline: 2px solid var(--ink, #1e1f22); outline-offset: 3px; } .ds-btn-sm { border-radius: 10px; padding: 0.5rem 0.875rem; font-size: 0.875rem; font-weight: 600; background-color: var(--ink, #1e1f22); color: var(--paper, #fbfbfa); text-decoration: none; transition: background-color 150ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-sm:hover { background-color: color-mix(in oklab, var(--ink, #1e1f22) 84%, var(--paper, #fbfbfa)); } .ds-btn-sm:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Receipt",
+      "kind": "card",
+      "refersTo": "receipt",
+      "description": "Signature component: square thermal paper torn along the bottom, item/leader/value lines in Martian Mono, one stamped value at most.",
+      "html": "<div class=\"ds-receipt-shadow\"><div class=\"ds-receipt\"><p class=\"ds-receipt-head\">Vault</p><p class=\"ds-fade\">Resumen de septiembre 2026</p><hr><dl class=\"ds-leaders\"><div><dt>Alquiler</dt><dd>320.000,00</dd></div><div><dt>Supermercado</dt><dd>214.300,00</dd></div><div><dt>Transporte</dt><dd>38.200,00</dd></div></dl><hr><dl class=\"ds-leaders\"><div><dt>Dólar MEP</dt><dd>1.533,70 ARS</dd></div></dl><p class=\"ds-fade\">Origen: API pública, solo lectura</p><hr><dl class=\"ds-leaders\"><div><dt>Guardado en</dt><dd class=\"ds-stamp\">tu computadora</dd></div><div><dt>Copias en la nube</dt><dd>0</dd></div></dl></div></div>",
+      "css": ".ds-receipt-shadow { max-width: 24rem; filter: drop-shadow(0 1px 1px rgb(30 31 34 / 0.06)) drop-shadow(0 14px 28px rgb(30 31 34 / 0.08)); } .ds-receipt { background-color: var(--paper, #fbfbfa); color: var(--ink, #1e1f22); font-family: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, monospace; font-stretch: 87.5%; font-size: 0.8125rem; line-height: 1.75; padding: 1.75rem 1.75rem 2.5rem; -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%; } .ds-receipt p, .ds-receipt dl { margin: 0; } .ds-receipt-head { font-family: Archivo, ui-sans-serif, system-ui, sans-serif; font-stretch: 118%; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.025em; } .ds-fade { color: var(--fade, #62646a); } .ds-receipt hr { margin: 0.875rem 0; border: 0; border-top: 1px dashed color-mix(in oklab, var(--ink, #1e1f22) 35%, transparent); } .ds-leaders > div { display: flex; align-items: baseline; gap: 0.5rem; } .ds-leaders dt { display: flex; flex: 1; align-items: baseline; gap: 0.5rem; min-width: 0; } .ds-leaders dt::after { content: ''; flex: 1; min-width: 1.25rem; border-bottom: 1px dotted color-mix(in oklab, var(--ink, #1e1f22) 45%, transparent); } .ds-leaders dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; } .ds-stamp { color: var(--accent, #c92a62); } @media (prefers-reduced-motion: no-preference) { .ds-receipt { animation: ds-print 1.4s steps(22, end) 250ms both; } } @keyframes ds-print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }"
+    },
+    {
+      "name": "Stub",
+      "kind": "card",
+      "refersTo": "stub",
+      "description": "The torn-off closing stub: receipt paper and shadow, torn along its top edge, holding the final download.",
+      "html": "<div class=\"ds-stub-shadow\"><div class=\"ds-stub\"><h2>Bajala y abrila. No hay más.</h2><p>Sin cuenta, sin registro, sin conexión.</p></div></div>",
+      "css": ".ds-stub-shadow { filter: drop-shadow(0 1px 1px rgb(30 31 34 / 0.06)) drop-shadow(0 14px 28px rgb(30 31 34 / 0.08)); } .ds-stub { background-color: var(--paper, #fbfbfa); color: var(--ink, #1e1f22); font-family: Archivo, ui-sans-serif, system-ui, sans-serif; padding: 3.5rem 1.5rem 2.5rem; -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%; mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%; } .ds-stub h2 { margin: 0; font-stretch: 118%; font-weight: 600; font-size: clamp(1.875rem, 1.25rem + 2vw, 3rem); line-height: 1.08; letter-spacing: -0.025em; } .ds-stub p { margin: 1.5rem 0 0; color: var(--fade, #62646a); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.55; }"
+    },
+    {
+      "name": "Capture Frame",
+      "kind": "custom",
+      "refersTo": "capture-frame",
+      "description": "12px hairline frame around a real app screenshot; fill matches the app window background.",
+      "html": "<figure class=\"ds-capture\"><div class=\"ds-capture-frame\"><div class=\"ds-capture-img\"></div></div><figcaption>Cada movimiento con su categoría, su cuenta y, si hace falta, el comprobante.</figcaption></figure>",
+      "css": ".ds-capture { margin: 0; max-width: 32rem; font-family: Archivo, ui-sans-serif, system-ui, sans-serif; } .ds-capture-frame { overflow: hidden; border: 1px solid var(--rule, #d5d7d3); border-radius: 12px; background: #ffffff; } .ds-capture-img { aspect-ratio: 2880 / 1784; background: #ffffff; } .ds-capture figcaption { margin-top: 1rem; font-size: 0.875rem; color: var(--fade, #62646a); }"
+    },
+    {
+      "name": "Warning Notice",
+      "kind": "custom",
+      "refersTo": "warning-notice",
+      "description": "The unsigned-app warning as a designed state: ink border, consequence first, then steps.",
+      "html": "<div class=\"ds-warning\"><p class=\"ds-warning-head\">La primera vez, macOS la va a bloquear.</p><p class=\"ds-warning-sub\">No está firmada con un certificado de Apple. Para abrirla:</p><ol><li>Entrá a Ajustes del Sistema → Privacidad y seguridad.</li><li>Elegí «Abrir igualmente».</li></ol><p class=\"ds-warning-sub\">Se hace una sola vez: después se actualiza sola.</p></div>",
+      "css": ".ds-warning { max-width: 32rem; border: 1px solid var(--ink, #1e1f22); border-radius: 10px; padding: 1.25rem; font-family: Archivo, ui-sans-serif, system-ui, sans-serif; color: var(--ink, #1e1f22); } .ds-warning p { margin: 0; } .ds-warning-head { font-weight: 600; } .ds-warning-sub { margin-top: 0.25rem !important; font-size: 0.875rem; color: var(--fade, #62646a); } .ds-warning ol { margin: 0.5rem 0 0.75rem; padding-left: 1.25rem; font-size: 0.875rem; line-height: 1.625; color: var(--fade, #62646a); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El comprobante en mano",
+    "overview": "Every movement leaves a receipt, and you keep it. The page is a cool grey desk with thermal-paper objects lying on it: tickets printed in near-black ink that fades to grey on secondary lines, torn along a serrated edge, itemised with dotted leaders between what a thing is and what it came to. The receipt is the proof device. It states the claim (\"Guardado en: tu computadora\") the way a ticket states a total, and the real app captures hang from it as attachments. Nothing on the desk performs except the paper, which feeds out of the printer a line at a time.\n\nDensity is low and deliberate. Prose sits in Archivo at normal width; every heading is set at the printer's double width (Archivo's width axis at 118%); Martian Mono appears only where a receipt would print data. The palette is a narrow band of cool neutrals plus one pink, the stripe at the end of a thermal roll, called Tinta de sello and spent at most once per screen. In the dark the desk goes dark and the paper dims, but it stays paper.\n\nThe feel of every control is \"Cotidiano y confiable\": the everyday objects of a shop counter and a bank slip, familiar enough that a non-technical visitor trusts them, with no decoration a ticket would not carry.",
+    "keyCharacteristics": [
+      "Thermal paper objects (receipts, a closing stub) on one flat grey ground; the paper is the only thing with depth.",
+      "Square paper with a 14px serrated edge; soft 10px controls; 12px capture frames.",
+      "Expanded-width Archivo for headers, normal Archivo for prose, Martian Mono only for amounts and data lines.",
+      "One accent, Tinta de sello, printed as a single value on a receipt, never as UI chrome.",
+      "Dark mode dims the paper to a grey sheet with dark ink; it never inverts it.",
+      "One motion gesture: paper prints downward, in steps, on load or on a scroll timeline."
+    ],
+    "rules": [
+      { "name": "The Tinta de sello Rule", "body": "The accent is spent at most once per screen, and only as a printed value on paper. If two stamped values can share a viewport, one of them loses the stamp. A second accent colour, or the accent on a control, breaks the system.", "section": "colors" },
+      { "name": "The Dimmed Paper Rule", "body": "Dark mode dims the sheet, it never inverts it: dark ink on a grey sheet on a dark desk. Paper tokens are redefined on the receipt and stub themselves, and those elements set their text colour explicitly, because inherited body colour would stay light on the dimmed sheet.", "section": "colors" },
+      { "name": "The Faded Ink Rule", "body": "Secondary information is carried by fading the ink, not by a new hue or a smaller weight. A whole ticket printed in faded ink (the cloud-app comparison) reads as the receipt you did not keep.", "section": "colors" },
+      { "name": "The Double-Width Rule", "body": "Every heading, from the hero to a ticket header and the logo wordmark, is Archivo at 118% width and weight 600. Prose never stretches.", "section": "typography" },
+      { "name": "The Printer Mono Rule", "body": "Martian Mono is for amounts, dates, rates and data lines, the things a till prints. It never sets a heading, a sentence of prose, or a button.", "section": "typography" },
+      { "name": "The Two Weights Rule", "body": "Regular (400) and semibold (600) carry the page; medium (500) is reserved for FAQ questions and small sub-labels. Nothing goes bolder than 600.", "section": "typography" },
+      { "name": "The One Ground Rule", "body": "Sections are separated by composition and whitespace, never by a band of colour or a divider between them. Hairlines appear only inside a list (facts, questions) and above the footer.", "section": "layout" },
+      { "name": "The Only Paper Lifts Rule", "body": "A shadow means \"this is a sheet of paper\". Cards, captures, buttons and panels never get one.", "section": "elevation" },
+      { "name": "The Square Paper Rule", "body": "Paper has square corners and a torn edge; controls are 10px; captures are 12px. The three radii never swap roles.", "section": "shapes" },
+      { "name": "The Paper Feed Rule", "body": "The page has one gesture: paper printing downward, revealed by a stepped clip-path inset from the top. The hero receipt prints on load (1.4s, 22 steps, 250ms delay); every other receipt prints on a view() scroll timeline (14 steps) whose range ends at entry 100%, so a sticky receipt is fully printed before it pins. No JavaScript scroll listeners. Everything is authored in its final state and the animation only runs under prefers-reduced-motion: no-preference and where the browser supports it, so nothing is ever left hidden.", "section": "components" }
+    ],
+    "dos": [
+      "Do put claims on paper: item, dotted leader, value, with the origin of any figure printed beneath it in Faded Ink.",
+      "Do set every heading in Archivo at 118% width, weight 600, and keep prose at normal width.",
+      "Do reserve Martian Mono (87.5% width, tabular figures) for amounts, dates, rates, data lines and version metadata.",
+      "Do spend Tinta de sello (#c92a62) on one printed value per screen, and swap to #f0689a on the dark page and #9e1d4b on dimmed paper.",
+      "Do dim the paper to #c9cac6 with #1e1f22 ink in dark mode, redefining the paper tokens on the receipt itself.",
+      "Do keep paper square with the 14px torn edge, controls at 10px and capture frames at 12px.",
+      "Do separate sections with composition and whitespace on one shared ground.",
+      "Do show the real app, light and dark captures paired, cropped to a readable scale on phones.",
+      "Do animate only the paper feed, from a final-state default, on load or a CSS scroll timeline ending at entry 100%."
+    ],
+    "donts": [
+      "Don't invert receipts in dark mode; a light-on-dark receipt is one more dark card.",
+      "Don't use the accent on buttons, links, borders, icons or backgrounds, and don't introduce a second accent or a brand gradient.",
+      "Don't give anything but paper a shadow, and don't use gradients as fills (the conic gradient exists only as the mask that cuts the teeth).",
+      "Don't round the paper or turn controls into pills.",
+      "Don't set headings, prose or buttons in Martian Mono, or go bolder than 600.",
+      "Don't put a label, kicker or number above a heading; the heading carries its own weight.",
+      "Don't separate sections with background bands or full-width dividers.",
+      "Don't drive motion with JavaScript scroll listeners, start content hidden, or end a scroll-driven range after entry 100% on a sticky element.",
+      "Don't use stock photography, device mockups, or a light capture on the dark page."
+    ]
+  }
+}

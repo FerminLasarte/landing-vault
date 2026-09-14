@@ -11,14 +11,14 @@ The app itself lives in a separate repository:
 
 - **Framework**: [Next.js 16](https://nextjs.org/) (App Router, React 19)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS v4, with the design tokens of the desktop app
-- **Fonts**: Geist and Geist Mono via `next/font`
+- **Styling**: Tailwind CSS v4
+- **Fonts**: Archivo (with its width axis) and Martian Mono via `next/font`
 - **Icons**: [lucide-react](https://lucide.dev/), the same set the app uses
 - **Downloads**: the GitHub Releases API of
   [`vault-ai`](https://github.com/FerminLasarte/vault-ai), read at build time
   and revalidated hourly
 
-No animation, form or state library: the reveal transitions, the theme toggle
+No animation, form or state library: the receipt printing, the theme toggle
 and the platform detection are each a few lines of platform API. See
 [Conventions](#conventions).
 
@@ -65,22 +65,21 @@ src/
   app/
     layout.tsx        Root layout, metadata, theme and platform boot script
     page.tsx          Composes the sections, in page order
-    globals.css       Design tokens, motion system, platform blocks
+    globals.css       Design tokens, receipt paper, motion, platform blocks
     icon.svg          Favicon, with its own dark-mode palette
     favicon.ico       Raster fallback, 16/32/48
     apple-icon.png    Home-screen icon, 180x180
   components/
     sections/         One file per section of the page
-    ui/               Shared primitives (container, section, button, app-shot, logo)
+    ui/               Shared primitives (container, section, button, receipt, app-shot, logo)
     site-header.tsx   Sticky header
+    mobile-menu.tsx   The one client component besides the theme toggle
     site-footer.tsx   Footer
     theme-toggle.tsx  Light/dark switch
-    motion-runtime.tsx  Scroll reveals and header state, one mount for the page
     download.tsx      The download buttons, used in the hero and the closing CTA
   lib/
-    site.ts           Product name, domain, repo, nav — edit here, not inline
+    site.ts           Product name, domain, repo, nav: edit here, not inline
     release.ts        Reads the latest release off the GitHub API
-    reveal.ts         Stagger helper
     utils.ts          `cn`
 public/
   screenshots/        App captures, light and dark
@@ -88,12 +87,7 @@ public/
 
 ## Conventions
 
-### Design
-
-The palette, radii and typography mirror the desktop app's token set
-(`src/index.css` in `vault-ai`): pure neutrals in OKLCH, red reserved for
-errors, `0.625rem` base radius. There is no brand colour, deliberately — the
-product's restraint is its identity. No gradients, shadows, or glass effects.
+### Copy
 
 Interface copy is in Spanish (rioplatense), matching the app's own language
 policy. Code and comments are in English, matching the app's codebase.
@@ -102,7 +96,8 @@ policy. Code and comments are in English, matching the app's codebase.
 
 `ui/logo.tsx` is the app's own mark, inlined as a component. It is two-tone by
 construction: the body is `currentColor`, so it takes the colour of the text it
-sits beside, and the cut-outs are filled with `var(--background)` rather than a
+sits beside, and the cut-outs are filled with the surface it sits on
+(`var(--logo-cut, var(--ground))`, redefined inside receipts) rather than a
 hardcoded white. That is what lets one copy of the markup read correctly in
 both themes — do not fork it into a light and a dark file.
 
@@ -174,15 +169,19 @@ scratch rather than from "coming soon" copy on a page that offers a download.
 
 ### Motion
 
-Sections stay Server Components and only carry a `data-reveal` attribute;
-`motion-runtime.tsx` wires all of them from a single mount. Three variants,
-defined in `globals.css`: the default rise-and-fade, `shot` for screenshots, and
-`row` for table rows.
+One gesture for the whole page: receipts print, a line at a time. `Receipt`
+takes `print="load"` (the hero, once on open), `"scroll"` (as it enters the
+viewport) or `"none"`. Both are CSS in `globals.css`: a stepped `clip-path`
+animation, the scroll version on `animation-timeline: view()`, so there is no
+scroll listener and no client JavaScript for it. The header hairline uses a
+scroll timeline the same way.
 
-The reveal styles hang off a `js` class set before first paint, and the runtime
-falls back to a geometry check rather than depending on `IntersectionObserver`
-alone — an element that never gets revealed would stay invisible, so the failure
-mode is content-first by construction.
+Every animation starts from the element's final state and only runs under
+`prefers-reduced-motion: no-preference` with timeline support, so a browser
+without it, or a visitor who asked for less motion, never sees hidden content.
+Keep the scroll range ending at `entry 100%`: a later end freezes a sticky
+receipt half-printed, because a stuck element stops moving against the
+viewport.
 
 ### Screenshots
 
