@@ -5,7 +5,7 @@ site's job is to explain the local-first argument and hand the visitor the
 right installer for their platform.
 
 The app itself lives in a separate repository:
-[`vault-ai`](https://github.com/FerminLasarte/vault-ai).
+[`vault`](https://github.com/FerminLasarte/vault).
 
 ## Tech stack
 
@@ -15,7 +15,7 @@ The app itself lives in a separate repository:
 - **Fonts**: Archivo (with its width axis) and Martian Mono via `next/font`
 - **Icons**: [lucide-react](https://lucide.dev/), the same set the app uses
 - **Downloads**: the GitHub Releases API of
-  [`vault-ai`](https://github.com/FerminLasarte/vault-ai), read at build time
+  [`vault`](https://github.com/FerminLasarte/vault), read at build time
   and revalidated hourly
 
 No animation, form or state library: the receipt printing, the theme toggle
@@ -118,7 +118,7 @@ crop. Regenerating them means redoing that padding, not just re-exporting.
 Asset URLs are never written into the site. Every file name carries the version
 (`Vault_1.0.2_universal.dmg`), so a hardcoded link is a 404 waiting for the next
 release. `lib/release.ts` reads
-`/repos/FerminLasarte/vault-ai/releases/latest` instead and matches by suffix —
+`/repos/FerminLasarte/vault/releases/latest` instead and matches by suffix —
 `.dmg` for macOS, `-setup.exe` for Windows with the `.msi` as the alternative —
 skipping `latest.json`, the `.sig` files and `.app.tar.gz`, which belong to the
 app's own updater rather than to a person.

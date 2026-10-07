@@ -21,7 +21,7 @@ Your finances live in one file on your own computer. No account, no server, no b
 ## Operating Context
 
 - Visitors compare it, implicitly, against their current spreadsheet and against cloud finance apps.
-- Downloads come from the latest GitHub release of `FerminLasarte/vault-ai`; asset names carry the version.
+- Downloads come from the latest GitHub release of `FerminLasarte/vault`; asset names carry the version.
 - The app is unsigned on both platforms: the first launch is blocked by the OS and needs a manual override. It updates itself afterwards.
 
 ## Capabilities and Constraints
@@ -43,7 +43,7 @@ Your finances live in one file on your own computer. No account, no server, no b
 ## Evidence on Hand
 
 - Real app screenshots, light and dark, with fictional data: `public/screenshots/` (resumen, estadisticas, transacciones, compromisos).
-- Public source code: https://github.com/FerminLasarte/vault-ai
+- Public source code: https://github.com/FerminLasarte/vault
 - No testimonials, user counts, press or benchmarks exist. Do not invent any.
 
 ## Product Principles
