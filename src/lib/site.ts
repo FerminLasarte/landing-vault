@@ -13,8 +13,8 @@ export const site = {
   locale: "es_AR",
   // The app's repository, in the casing GitHub publishes it under: the same
   // slug builds both the human URL and the releases API call in lib/release.ts.
-  repoSlug: "FerminLasarte/vault-ai",
-  repo: "https://github.com/FerminLasarte/vault-ai",
+  repoSlug: "FerminLasarte/vault",
+  repo: "https://github.com/FerminLasarte/vault",
 } as const;
 
 export const nav = [

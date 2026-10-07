@@ -1,6 +1,6 @@
 # landing-vault
 
-Marketing website for `vault-ai`, a local-first personal finance desktop app (Tauri + React, SQLite, no backend server). This repo is separate from the app's codebase.
+Marketing website for `vault`, a local-first personal finance desktop app (Tauri + React, SQLite, no backend server). This repo is separate from the app's codebase.
 
 ## Product
 
